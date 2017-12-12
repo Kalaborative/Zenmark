@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css?family=Dosis');
+body {
+	background-color: #2196F3;
+	font-family: 'Dosis', sans-serif;
+}
+.navbar {
+	padding: 3rem 3rem;
+}
+#username:focus {
+	outline: transparent;
+}
+.modal-content {
+	background-color: aliceblue;
+	border-radius: 20px;
+}
+
+span.errorresponse {
+	color: red;
+	font-weight: 5px;
+}
+
+li {
+	font-size: 15px;
+}
