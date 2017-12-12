@@ -1,0 +1,14 @@
+body {
+	background-color: black;
+}
+.navbar {
+	padding: 3rem 3rem;
+}
+#username:focus {
+	outline: transparent;
+}
+.modal-content {
+	background-color: aliceblue;
+	border-radius: 20px;
+}
+	
