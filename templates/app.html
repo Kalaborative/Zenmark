@@ -45,9 +45,10 @@
 	<hr class="my-4">
 	<p class="lead">
 		<a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#myModal">Log In</a>
+		<a class="btn btn-success btn-lg" href="#" role="button" data-toggle="modal" data-target="#mySignup">Sign Up!</a>
 	</p>
 </div>
-<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade draggable" id="myModal" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -68,6 +69,43 @@
 			<div class="form-group">
 			  <label for="password">Password</label>
 			  <input type="password" class="form-control" id="password" placeholder="Password">
+			  <span class="errorresponse"></span>
+			</div>
+		</fieldset>
+	    </form>
+		</div>
+			  <div class="modal-footer">
+				<button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			  </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade draggable" id="mySignup" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Sign Up For Zenmark</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<form action="#" method="post" id="myLoginData">
+		<fieldset>
+			<div class="form-group row">
+			  <label for="signupName" class="col-sm-2 col-form-label">Create a username</label>
+			  <div class="col-sm-10">
+				<input type="text" class="form-control-plaintext" id="signupName" placeholder="@Username">
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label for="signupPass">Now come up with a good password.</label>
+			  <input type="password" class="form-control" id="signupPass" placeholder="Password">
+			</div>
+			<div class="form-group">
+			  <label for="confirmPass">Now type that again.</label>
+			  <input type="password" class="form-control" id="confirmPass" placeholder="Password">
 			  <span class="errorresponse"></span>
 			</div>
 		</fieldset>

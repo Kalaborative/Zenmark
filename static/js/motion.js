@@ -9,7 +9,7 @@ const html = new mojs.Html({
 }).play();
 
 $(document).ready(function(){
-	$('#myModal').draggable();
+	$('.draggable').draggable();
 	console.log("I am ready!");	
 	$('#submitBtn').click(function(){
 		var user = $('#username').val();

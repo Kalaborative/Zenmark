@@ -9,6 +9,9 @@ body {
 #username:focus {
 	outline: transparent;
 }
+#signupName:focus {
+	outline: transparent;
+}
 .modal-content {
 	background-color: aliceblue;
 	border-radius: 20px;
