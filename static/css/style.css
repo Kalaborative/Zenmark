@@ -20,6 +20,9 @@ body {
 .active {
 	color: white;
 }
+img#zenLogo{
+	max-width: 100%;
+}
 
 span.errorresponse, span.signuperrorresponse {
 	color: red;
