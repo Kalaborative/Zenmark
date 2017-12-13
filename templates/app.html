@@ -33,15 +33,38 @@
   </div>
 </nav>
 <div class="jumbotron">
-	<h1 class="display-3">Events, gamified. 🚀</h1>
-	<p class="lead">Be the best organizer by engaging in events, earn points, and redeem prizes! </p>
-	<p class="lead">
-		<ul>
-			<li><strong>Climb the leaderboards.</strong> Compete with others to get the most points!</li>
-			<li><strong>Stay current.</strong> Events are always displayed to keep you updated.</li>
-			<li><strong>Personalize your account.</strong> Every account lets you personalize your info. Make it you!</li>
-		</ul>
-	</p>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6">
+				<h1 class="display-3">Events, gamified. 🚀</h1>
+				<div class="card border-light mb-3" style="max-width: 20rem;">
+				  <div class="card-body">
+				    <p class="lead" id="card-context">Compete with others to get the most points and earn cool achievements! Top the leaderboard and earn cool badges along the way!</p>
+				  </div>
+				</div>
+			</div>
+			<div class="list-group col-md-6">
+	  		 <a class="list-group-item list-group-item-action flex-column align-items-start active" id="list-item-1">
+	    	  <div class="d-flex w-100 justify-content-between">
+	      		<h5 class="mb-1"><strong>Climb the leaderboards. 🏆</strong></h5>
+	    	  </div>
+	  		 </a>
+			  <a class="list-group-item list-group-item-action flex-column align-items-start" id="list-item-2">
+			    <div class="d-flex w-100 justify-content-between">
+			      <h5 class="mb-1"><strong>Stay current. 🌊</strong></h5>
+			    </div>
+			  </a>
+			  <a class="list-group-item list-group-item-action flex-column align-items-start" id="list-item-3">
+			    <div class="d-flex w-100 justify-content-between">
+			      <h5 class="mb-1"><strong>Personalize your account. 🎨</strong></h5>
+			    </div>
+			  </a>
+			</div>
+		</div>
+		<div class="row">
+			
+		</div>
+	</div>
 	<hr class="my-4">
 	<p class="lead">
 		<a class="btn btn-primary btn-lg" href="#" role="button" data-toggle="modal" data-target="#myModal">Log In</a>
@@ -58,17 +81,17 @@
         </button>
       </div>
       <div class="modal-body">
-		<form action="#" method="post" id="myLoginData">
+		<form action="{{url_for('loading')}}" method="post" id="myLoginData">
 		<fieldset>
 			<div class="form-group row">
 			  <label for="username" class="col-sm-2 col-form-label">User</label>
 			  <div class="col-sm-10">
-				<input type="text" class="form-control-plaintext" id="username" placeholder="@Username">
+				<input type="text" class="form-control-plaintext" id="username" name="username" placeholder="@Username">
 			  </div>
 			</div>
 			<div class="form-group">
 			  <label for="password">Password</label>
-			  <input type="password" class="form-control" id="password" placeholder="Password">
+			  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
 			  <span class="errorresponse"></span>
 			</div>
 		</fieldset>
@@ -91,28 +114,31 @@
         </button>
       </div>
       <div class="modal-body">
-		<form action="#" method="post" id="myLoginData">
+		<form action="#" method="post" id="mySignupData">
 		<fieldset>
 			<div class="form-group row">
 			  <label for="signupName" class="col-sm-2 col-form-label">Create a username</label>
 			  <div class="col-sm-10">
-				<input type="text" class="form-control-plaintext" id="signupName" placeholder="@Username">
+				<input type="text" class="form-control-plaintext" id="signupName" name="signupName" placeholder="@Username">
 			  </div>
 			</div>
 			<div class="form-group">
 			  <label for="signupPass">Now come up with a good password.</label>
-			  <input type="password" class="form-control" id="signupPass" placeholder="Password">
+			  <input type="password" class="form-control" id="signupPass" name="signupPass" placeholder="Password">
 			</div>
 			<div class="form-group">
 			  <label for="confirmPass">Now type that again.</label>
 			  <input type="password" class="form-control" id="confirmPass" placeholder="Password">
-			  <span class="errorresponse"></span>
+			  <span class="signuperrorresponse"></span>
 			</div>
 		</fieldset>
 	    </form>
 		</div>
 			  <div class="modal-footer">
-				<button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+			  	<div class="alert alert-success" id="loginSuccess">
+  				 <strong>Success!</strong> You've successfully made your account. <a href="{{url_for('index')}}">Please log in.</a>
+			    </div>
+				<button type="submit" class="btn btn-primary" id="signupSubmitBtn">Submit</button>
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 			  </div>
     </div>
@@ -124,5 +150,46 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>
 	<script src="static/js/motion.js"></script>
+	<script type="text/javascript">
+		$('#submitBtn').click(function(){
+			var user = $('#username').val().toLowerCase();
+			var pw = $('#password').val();
+			var allOrgs = {{ userdata | safe }};
+			var matchedCredentials = false;
+			for (let i = 0; i < allOrgs.length; i++){
+				var [correctUser, correctPw] = allOrgs[i];
+				if (user === correctUser && pw === correctPw) {
+					matchedCredentials = true
+					break
+				}
+			}
+			if (!user || !pw){
+				$('.errorresponse').html('Please complete both fields.');
+			} else if (!matchedCredentials) {
+				$('.errorresponse').html("Incorrect login data");	
+			} else {
+				$('#myLoginData').submit();
+			}
+		});	
+		$('#signupSubmitBtn').click(function(){
+			var newUser = $('#signupName').val();
+			var newPw = $('#signupPass').val();
+			var confirmPw = $('#confirmPass').val();
+			var allRegisteredOrgs = {{ userdata | safe }};
+			console.log(allRegisteredOrgs);
+
+			var orgUsernames = allRegisteredOrgs.map(org => org[0]);
+
+			if (!newUser || !newPw || !confirmPw) {
+				$('.signuperrorresponse').html('Please fill out all fields');
+			} else if ($.inArray(newUser.toLowerCase(), orgUsernames) !== -1) {
+				$('.signuperrorresponse').html('User is already registered. Please sign in!');
+			} else if (newPw !== confirmPw) {
+				$('.signuperrorresponse').html('Passwords do not match');
+			} else {
+				$('#mySignupData').submit();
+			}
+		});
+	</script>
   </body>
 </html>

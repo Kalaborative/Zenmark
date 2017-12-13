@@ -17,11 +17,18 @@ body {
 	border-radius: 20px;
 }
 
-span.errorresponse {
+.active {
+	color: white;
+}
+
+span.errorresponse, span.signuperrorresponse {
 	color: red;
 	font-weight: 5px;
 }
 
 li {
 	font-size: 15px;
+}
+.displayinline {
+	display: inline-block;
 }
