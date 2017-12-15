@@ -78,6 +78,8 @@ def loading():
 			db.session.commit()
 			login_user(user, remember=True)
 			return render_template('loading.html')
+		else:
+			return "No user found named {}".format(logged_in_user)
 
 @app.route('/welcome')
 @login_required

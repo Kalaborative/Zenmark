@@ -150,7 +150,9 @@
 			if (!user || !pw){
 				$('.errorresponse').html('Please complete both fields.');
 			} else if (!matchedCredentials) {
-				$('.errorresponse').html("Incorrect login data");	
+				$('.errorresponse').html("Incorrect login data");
+				$('#username').val('');
+				$('#password').val('');	
 			} else {
 				$('#myLoginData').submit();
 			}
