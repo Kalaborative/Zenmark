@@ -8,5 +8,6 @@ body {
 	top: 70%;
 	left: 50%;
 	font-size: -webkit-xxx-large;
+	transform: translate(-50%, 0%);
 	color: aquamarine;
 }
