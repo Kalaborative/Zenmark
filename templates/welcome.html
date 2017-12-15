@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %} {{ super() }} {% endblock %}
+{% block head %}
+	{{ super() }}
+{% endblock %}
+{% block content %} Welcome to Zenmark, {{ current_user.username }}! {% endblock %}
+{% block foot %}
+	{{ super() }}
+{% endblock %}
+	

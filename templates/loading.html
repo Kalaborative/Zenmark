@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %} {{ super() }} {% endblock %}
+{% block head %}
+	{{ super() }}
+	<link rel="stylesheet" href="static/css/stylesheet.css">
+{% endblock %}
+{% block content %} <h1 class="loadtext">Loading...</h1> {% endblock %}
+{% block foot %}
+	{{ super() }}
+	<script src="static/js/motionLoad.js"></script>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %} Trophy {% endblock %}
+{% block head %}
+	{{ super() }}
+{% endblock %}
+{% block content %}
+	<div class="gift"></div>
+{% endblock %}
+{% block foot %}
+	{{ super() }}
+	<script src="https://cdn.jsdelivr.net/mojs-player/latest/mojs-player.min.js"></script>
+	<script type="text/javascript">
+	const OPTS = {
+  fill:           'none',
+  radius:         50,
+  strokeWidth:    { 50 : 0 },
+  scale:          { 0: 1 },
+  angle:          { 'rand(-35, -70)': 0 },
+};
+
+let delay = 0,
+    delayStep = 150,
+    easing    = 'cubic.out';
+
+const rect = new mojs.Shape({
+  ...OPTS,
+  shape:          'rect',
+  stroke:         'cyan'
+});
+
+const circle = new mojs.Shape({
+  ...OPTS,
+  shape:          'circle',
+  stroke:         'yellow',
+  delay:          delay += delayStep,
+  radius:         25,
+  strokeWidth:    { 25: 0, easing },
+  x: -35, y: -35
+});
+
+const triangle = new mojs.Shape({
+  ...OPTS,
+  shape:          'polygon',
+  stroke:         'magenta',
+  delay:          delay += delayStep,
+  radius:         30,
+  strokeWidth:    { 30: 0, easing },
+  x: -20, y: 25
+});
+
+const polygon = new mojs.Shape({
+  ...OPTS,
+  shape:          'polygon',
+  points:         5,
+  stroke:         '#00F87F',
+  delay:          delay += delayStep,
+  x: 20,        y: -35
+});
+
+const triangle2 = new mojs.Shape({
+  ...OPTS,
+  shape:          'polygon',
+  points:         { 3: 10 },
+  stroke:         'yellow',
+  delay:          delay += delayStep,
+});
+
+const polygon2 = new mojs.Shape({
+  ...OPTS,
+  shape:          'polygon',
+  points:         5,
+  stroke:         'magenta',
+  delay:          delay += delayStep,
+  radius:         25,
+  strokeWidth:    { 25 : 0, easing },
+  x: -35,        y: -20
+});
+
+const circle2 = new mojs.Shape({
+  ...OPTS,
+  stroke:         '#F64040',
+  delay:          delay += delayStep,
+  radius:         20,
+  strokeWidth:    { 20: 0, easing },
+  x: 35, y: 35
+});
+
+const timeline = new mojs.Timeline;
+
+timeline
+   .add( rect, circle, triangle, polygon, triangle2, polygon2, circle2 );
+
+new MojsPlayer({ add: timeline });
+	</script>
+{% endblock %}
