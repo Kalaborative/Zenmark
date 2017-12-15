@@ -18,7 +18,7 @@ def test_login_only_username():
 	driver.find_element_by_id('username').send_keys('random Guy')
 	driver.find_element_by_id('submitBtn').click()
 	error = driver.find_element_by_class_name('errorresponse').text
-	assert "Please complete that fields" == error
+	assert "Please complete both fields." == error
 
 def test_teardown():
 	driver.quit()
