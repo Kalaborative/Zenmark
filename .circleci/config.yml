@@ -53,6 +53,12 @@ jobs:
             . venv/bin/activate
             python -m pytest -v tests/test_login.py
 
+      - run:
+          name: Test 2
+          command: |
+            . venv/bin/activate
+            python -m pytest -v tests/test_login2.py
+
       - store_artifacts:
           path: test-reports
           destination: test-reports
