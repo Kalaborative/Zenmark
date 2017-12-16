@@ -1,0 +1,41 @@
+[Achievement: requirement]
+- Plane: Your events really took off. Congrats for going above and beyond! [More than 10 attendants.]
+- Sword: Your events really brought out the competitive spirit! [Host a game + more than 10 attendants.]
+- Hourglass: Your passion is longlasting, and so are your events. [Event lasts more than 1 hour.]
+- Umbrella: Amidst all those trolls, you kept your cool! Your events were fail-proof. [Event had more than 4 trolls.]
+- Dove: Your events are nice and peaceful. Ahh, peace and quiet. [More than 3 events with less than 10 people.]
+- Waterdrop: Your events really flowed. Keep the waters nice and steady. [Random]
+- Pegasus: Majestic and immovable. You lead your events with confidence! [Host an event more than 20 attendants.]
+- Fire: You're on fire! Keep doing a good job hosting those events! [Host 4 events in a row.]
+- Kitten: Here's a cute little friend, always there to keep you company during your event. [Random]
+- Rose: Spread the love. Your events promoted a loving theme. [Host a prom or speed dating event.]
+- Wineglass: 18+ events are a thing? Better keep the squeakers out! [Host an 18+ event.]
+- Gem: Your efforts are precious. Great events yield great results. [Random]
+- Fiery arrow: Your passion soars above the rest. Events mean something to you! [Random]
+- Laser gun: A big competition can be daunting. But with your laser, nothing can stop you! [Random]
+- Balloon: Your events have a lot of potential. They keep people busy and keep your events afloat! [Host 5 events.]
+- Falcon: Congrats! Making great events makes Discord a much happier place. [Host 15 events.]
+- Dragon: Nothing's cooler than an awesome dragon. Except for your events. [Host 25 events.]
+- Crown: You've outshone the others. Your legacy will be rewarded! [Host 35 events.]
+
+[Levels: Each completed event awards anywhere between 30 to 50 XP.]
+Lvl 1: 0
+Lvl 2: 100
+Lvl 3: 200
+Lvl 4: 350
+Lvl 5: 500
+Lvl 6: 700
+Lvl 7: 950
+Lvl 8: 1150
+Lvl 9: 1400
+Lvl 10: 1700
+Lvl 11: 1950
+Lvl 12: 2100
+Lvl 13: 2400
+Lvl 14: 2750
+Lvl 15: 3100
+Lvl 16: 3500
+Lvl 17: 4000
+Lvl 18: 4600
+Lvl 19: 5100
+Lvl 20: 5750

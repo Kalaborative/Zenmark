@@ -86,10 +86,10 @@ def loading():
 def welcome():
 	return render_template('welcome.html')
 
-@app.route('/trophy')
-# @login_required
-def trophy():
-	return render_template('trophy.html')
+@app.route('/gift')
+@login_required
+def gift():
+	return render_template('gift.html')
 
 if __name__ == "__main__":
 	# convention to run on Heroku
