@@ -6,6 +6,7 @@ from time import sleep
 
 driver = webdriver.Chrome()
 
+print("Starting up!")
 def test_setup():
 	driver.get('http://localhost:5000')
 	driver.implicitly_wait(30)
@@ -48,5 +49,4 @@ def test_correct_login():
 	assert "Loading" in h1_text
 
 def test_teardown():
-	driver.quit()
 	assert True
