@@ -54,29 +54,49 @@ $(document).ready(function(){
 		delay: 2000,
 		duration: 1000
 	}
-	
-	const ice = new mojs.Shape({
-		...OPTS}).then({scale: 0, duration: 300}).play();
-		
-	const ice2 = new mojs.Shape({...OPTS, delay: 3000}).then({scale: 0, duration: 300}).play();
 
-	const ice3 = new mojs.Shape({...OPTS, delay: 4000}).then({scale: 0, duration: 300}).play();
-	
-	const ice4 = new mojs.Shape({...OPTS, delay: 5000}).then({scale: 0, duration: 300}).play();
-	
-	const ice5 = new mojs.Shape({...OPTS, delay: 6000}).then({scale: 0, duration: 300}).play();
-	
-	const ice6 = new mojs.Shape({...OPTS, delay: 7000}).then({scale: 0, duration: 300}).play();
-	
-	const ice7 = new mojs.Shape({...OPTS, delay: 8000}).then({scale: 0, duration: 300}).play();
-	
-	const ice8 = new mojs.Shape({...OPTS, delay: 9000}).then({scale: 0, duration: 300}).play();
-	
-	const ice9 = new mojs.Shape({...OPTS, delay: 10000}).then({scale: 0, duration: 300, onComplete: function () { window.location.href = "/welcome" }}).play();
-	
+	var rand = Math.floor(Math.random() * 5) + 1;
+	var ice;
+
+	switch (rand) {
+		case 1:
+			ice = new mojs.Shape({...OPTS}).then({scale: 0, duration: 300}).play();
+			ice2 = new mojs.Shape({...OPTS, delay: 3000}).then({scale: 0, duration: 300}).play();
+			ice3 = new mojs.Shape({...OPTS, delay: 4000}).then({scale: 0, duration: 300, onComplete: function () { window.location.href = "/welcome" }}).play();
+			break;
+		case 2:
+			ice = new mojs.Shape({...OPTS}).then({scale: 0, duration: 300}).play();
+			ice2 = new mojs.Shape({...OPTS, delay: 3000}).then({scale: 0, duration: 300}).play();
+			ice3 = new mojs.Shape({...OPTS, delay: 4000}).then({scale: 0, duration: 300}).play();
+			ice4 = new mojs.Shape({...OPTS, delay: 5000}).then({scale: 0, duration: 300, onComplete: function () { window.location.href = "/welcome" }}).play();
+			break;
+		case 3:
+			ice = new mojs.Shape({...OPTS}).then({scale: 0, duration: 300}).play();
+			ice2 = new mojs.Shape({...OPTS, delay: 3000}).then({scale: 0, duration: 300}).play();
+			ice3 = new mojs.Shape({...OPTS, delay: 4000}).then({scale: 0, duration: 300}).play();
+			ice4 = new mojs.Shape({...OPTS, delay: 5000}).then({scale: 0, duration: 300}).play();
+			ice5 = new mojs.Shape({...OPTS, delay: 6000}).then({scale: 0, duration: 300, onComplete: function () { window.location.href = "/welcome" }}).play();
+			break;
+		case 4:
+			ice = new mojs.Shape({...OPTS}).then({scale: 0, duration: 300}).play();
+			ice2 = new mojs.Shape({...OPTS, delay: 3000}).then({scale: 0, duration: 300}).play();
+			ice3 = new mojs.Shape({...OPTS, delay: 4000}).then({scale: 0, duration: 300}).play();
+			ice4 = new mojs.Shape({...OPTS, delay: 5000}).then({scale: 0, duration: 300}).play();
+			ice5 = new mojs.Shape({...OPTS, delay: 6000}).then({scale: 0, duration: 300}).play();
+			ice6 = new mojs.Shape({...OPTS, delay: 7000}).then({scale: 0, duration: 300, onComplete: function () { window.location.href = "/welcome" }}).play();
+			break;
+		case 5:
+			ice = new mojs.Shape({...OPTS}).then({scale: 0, duration: 300}).play();
+			ice2 = new mojs.Shape({...OPTS, delay: 3000}).then({scale: 0, duration: 300}).play();
+			ice3 = new mojs.Shape({...OPTS, delay: 4000}).then({scale: 0, duration: 300}).play();
+			ice4 = new mojs.Shape({...OPTS, delay: 5000}).then({scale: 0, duration: 300}).play();
+			ice5 = new mojs.Shape({...OPTS, delay: 6000}).then({scale: 0, duration: 300}).play();
+			ice6 = new mojs.Shape({...OPTS, delay: 7000}).then({scale: 0, duration: 300}).play();
+			ice7 = new mojs.Shape({...OPTS, delay: 8000}).then({scale: 0, duration: 300, onComplete: function () { window.location.href = "/welcome" }}).play();
+	}
 	
 	var $loading = $('.loadtext');
 	$loading.hide();
 	setTimeout(function(){ $loading.fadeIn('slow'); }, 2000);
-	
+
 });
