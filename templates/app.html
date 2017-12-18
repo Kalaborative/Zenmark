@@ -67,17 +67,17 @@
         </button>
       </div>
       <div class="modal-body">
-		<form action="{{url_for('loading')}}" method="post" id="myLoginData" autocomplete="off">
+		<form action="{{url_for('loading')}}" method="post" id="myLoginData">
 		<fieldset>
 			<div class="form-group row">
 			  <label for="username" class="col-sm-2 col-form-label">User</label>
 			  <div class="col-sm-10">
-				<input type="text" class="form-control-plaintext" id="username" name="username" placeholder="@Username">
+				<input type="text" class="form-control-plaintext" id="username" name="username" placeholder="@Username" autocomplete="username">
 			  </div>
 			</div>
 			<div class="form-group">
 			  <label for="password">Password</label>
-			  <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+			  <input type="password" class="form-control" id="password" name="password" placeholder="Password" autocomplete="current-password">
 			  <span class="errorresponse"></span>
 			</div>
 		</fieldset>
@@ -85,7 +85,7 @@
 		</div>
 			  <div class="modal-footer">
 				<button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" id="closebtn">Close</button>
 			  </div>
     </div>
   </div>
@@ -105,16 +105,16 @@
 			<div class="form-group row">
 			  <label for="signupName" class="col-sm-2 col-form-label">Create a username</label>
 			  <div class="col-sm-10">
-				<input type="text" class="form-control-plaintext" id="signupName" name="signupName" placeholder="@Username">
+				<input type="text" class="form-control-plaintext" id="signupName" name="signupName" placeholder="@Username" autocomplete="username">
 			  </div>
 			</div>
 			<div class="form-group">
 			  <label for="signupPass">Now come up with a good password.</label>
-			  <input type="password" class="form-control" id="signupPass" name="signupPass" placeholder="Password">
+			  <input type="password" class="form-control" id="signupPass" name="signupPass" placeholder="Password" autocomplete="new-password">
 			</div>
 			<div class="form-group">
 			  <label for="confirmPass">Now type that again.</label>
-			  <input type="password" class="form-control" id="confirmPass" placeholder="Password">
+			  <input type="password" class="form-control" id="confirmPass" placeholder="Password" autocomplete="new-password">
 			  <span class="signuperrorresponse"></span>
 			</div>
 		</fieldset>
@@ -122,7 +122,7 @@
 		</div>
 			  <div class="modal-footer">
 			  	<div class="alert alert-success" id="loginSuccess">
-  				 <strong>Success!</strong> You've successfully made your account. <a href="{{url_for('index')}}">Please log in.</a>
+  				 <strong>Success!</strong> You've successfully made your account. You may now log in.
 			    </div>
 				<button type="submit" class="btn btn-primary" id="signupSubmitBtn">Submit</button>
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -135,10 +135,12 @@
 	{{ super() }}
 		<script src="static/js/motion.js"></script>
 		<script type="text/javascript">
+		var allOrgs
+		allOrgs = {{ userdata | safe }};
+		var allRegisteredOrgs;
 		$('#submitBtn').click(function(){
 			var user = $('#username').val().toLowerCase();
 			var pw = $('#password').val();
-			var allOrgs = {{ userdata | safe }};
 			var matchedCredentials = false;
 			for (let i = 0; i < allOrgs.length; i++){
 				var [correctUser, correctPw] = allOrgs[i];
@@ -156,13 +158,12 @@
 			} else {
 				$('#myLoginData').submit();
 			}
-		});	
+		});
 		$('#signupSubmitBtn').click(function(){
 			var newUser = $('#signupName').val();
 			var newPw = $('#signupPass').val();
 			var confirmPw = $('#confirmPass').val();
-			var allRegisteredOrgs = {{ userdata | safe }};
-			console.log(allRegisteredOrgs);
+			allRegisteredOrgs = {{ userdata | safe }};
 
 			var orgUsernames = allRegisteredOrgs.map(org => org[0]);
 
@@ -175,6 +176,22 @@
 			} else {
 				$('#mySignupData').submit();
 			}
+		});
+		$('#mySignupData').on('submit', function(e){
+			e.preventDefault();
+			$.post('/', data=$('#mySignupData').serialize()).done(function(){
+				var newUser = $('#signupName').val().toLowerCase();
+				var newPw = $('#signupPass').val();
+				allOrgs.push([newUser, newPw]);
+				allRegisteredOrgs.push([newUser, newPw]);
+				$('#loginSuccess').show();
+				$('#signupName').val('');
+				$('#signupPass').val('');
+				$('#confirmPass').val('');
+				$.get("/");
+			}).fail(function(){
+				alert('Could not insert data!');
+			});
 		});
 	</script>
 {% endblock %}

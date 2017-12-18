@@ -43,17 +43,4 @@ $(document).ready(function(){
 		$(this).addClass('active');
 		$('#card-context').html(features[2]);
 	});
-	
-	$('#mySignupData').on('submit', function(e){
-		e.preventDefault();
-		console.log("I was submitted!");
-		$.post('/', data=$('#mySignupData').serialize()).done(function(){
-			$('#loginSuccess').show();
-			$('#signupName').val('');
-			$('#signupPass').val('');
-			$('#confirmPass').val('');
-		}).fail(function(){
-			alert('Could not insert data!');
-		});
-	});
 });

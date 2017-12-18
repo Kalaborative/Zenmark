@@ -1,6 +1,6 @@
 [Achievement: requirement]
 - Plane: Your events really took off. Congrats for going above and beyond! [More than 10 attendants.]
-- Sword: Your events really brought out the competitive spirit! [Host a game + more than 10 attendants.]
+- Sword: Your events really brought out the competitive spirit! But will you come out on top? [Host a game + more than 10 attendants.]
 - Hourglass: Your passion is longlasting, and so are your events. [Event lasts more than 1 hour.]
 - Umbrella: Amidst all those trolls, you kept your cool! Your events were fail-proof. [Event had more than 4 trolls.]
 - Dove: Your events are nice and peaceful. Ahh, peace and quiet. [More than 3 events with less than 10 people.]
