@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, jsonify
-from flask_login import LoginManager, login_required, login_user, current_user
+from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from os import environ, urandom
 
@@ -90,6 +90,13 @@ def welcome():
 @login_required
 def gift():
 	return render_template('gift.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+	logout_user()
+	return redirect(url_for('index'))
+
 
 if __name__ == "__main__":
 	# convention to run on Heroku
