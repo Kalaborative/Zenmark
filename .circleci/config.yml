@@ -51,7 +51,7 @@ jobs:
           name: Test 1
           command: |
             . venv/bin/activate
-            python -m pytest -q tests/
+            python -m pytest -s -v tests/
 
       # - run:
       #     name: Test 2
@@ -59,14 +59,7 @@ jobs:
       #       . venv/bin/activate
       #       python -m pytest -v tests/test_login2.py
 
-      - run:
-          name: Creating Artifacts
-          command: |
-            mkdir test-reports;
-            echo "my artifact file" > ~/repo/test-reports/artifact-1;
-
-
       - store_artifacts:
-          path: test-reports
+          path: ~/repo/test-reports
           destination: test-reports
           
