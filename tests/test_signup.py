@@ -93,6 +93,7 @@ def test_signup_recheck_if_user_exists():
 	signuperror = driver.find_element_by_class_name('signuperrorresponse').text
 	assert "already registered" in signuperror
 
+
 def test_teardown():
 	driver.quit()
 	assert True

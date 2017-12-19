@@ -42,7 +42,7 @@ def test_failed_login_attempt():
 
 def test_correct_login():
 	driver.find_element_by_id('username').send_keys('Guest')
-	driver.find_element_by_id('password').send_keys('guest123')
+	driver.find_element_by_id('password').send_keys('Guest123')
 	driver.find_element_by_id('submitBtn').click()
 	WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'h1.loadtext')))
 	h1_text = driver.find_element_by_tag_name('h1').text
