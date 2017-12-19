@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
+import requests
 from os import environ, urandom
 
 
@@ -75,6 +76,16 @@ def load_user(user_id):
 def unauthorized():
 	return "You are not logged in!"
 
+def send_simple_message(signupUserAdmin):
+	r = requests.post(
+		'https://api.mailgun.net/v3/vizionary-dev.xyz/messages',
+		auth=('api', 'key-8e60a5b2a29f6d59869db87cb87caee1'),
+		data={"from": "Zenmark Mail <postmaster@vizionary-dev.xyz>",
+			"to": "mdavis4@dtcc.com",
+			"subject": "New admin registration",
+			"text": "Hi Drew. \nThis is a notification to inform you that a new user named '{}' has signed up as an admin. If this looks right, you don't need to do anything. Otherwise you will need to log in to Zenmark and correct this. That is your action item. Verify this login. Thanks! \n\n The Zenmark Team. :-)".format(signupUserAdmin)}
+		)
+	return r.status_code
 
 @app.route('/', methods=["GET", "POST"])
 def index():
@@ -87,14 +98,13 @@ def index():
 		try:
 			checkifGuest = request.form['guestCheck']
 			if checkifGuest == "true":
-				print("Guest found")
 				newGuest = True
 		except:
 			pass
 		try:
 			checkifAdmin = request.form['adminCheck']
 			if checkifAdmin == "true":
-				print("Admin found")
+				print(send_simple_message(request.form['signupName']))
 				newAdmin = True
 		except:
 			pass
@@ -129,7 +139,8 @@ def welcome():
 	all_event_data = []
 	for event in all_events:
 		all_event_data.append([event.day, event.event, event.orgs])
-	return render_template('welcome.html', eventdata= all_event_data)
+	unique_notifs = list(set(current_user.notifications.split(',')))
+	return render_template('welcome.html', eventdata= all_event_data, notifs=unique_notifs)
 
 
 @app.route('/checkyesterday', methods=["POST"])
@@ -138,14 +149,18 @@ def checkyesterday():
 		yday_date = request.json['yesterday']
 		yday_event = EventSchedule.query.filter(EventSchedule.full_date == yday_date).first()
 		if yday_event.orgs == "blank":
-			return jsonify({"return_msg": "Looks like someone forgot to host yesterday's event. Fill it in now?"})
-		else:
-			return jsonify({"good": "true"})
+			current_user.notifications += ",needydayevent"
+			db.session.commit()
+		unique_notifs = list(set(current_user.notifications.split(",")))
+		return jsonify({"notifs": unique_notifs})
+
 
 @app.route('/myprofile')
 @login_required
 def profile():
-	return render_template('profile.html')
+	unique_notifs = list(set(current_user.notifications.split(',')))
+	print(unique_notifs)
+	return render_template('profile.html', notifs=unique_notifs)
 
 @app.route('/gift')
 @login_required
@@ -157,6 +172,14 @@ def gift():
 def logout():
 	logout_user()
 	return redirect(url_for('index'))
+
+@app.route('/resetnotifs')
+def resetnotifs():
+	allUsers = User.query.all()
+	for user in allUsers:
+		user.notifications = ""
+	db.session.commit()
+	return jsonify({"operation": "success"})
 
 
 if __name__ == "__main__":

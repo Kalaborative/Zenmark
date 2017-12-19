@@ -2,38 +2,107 @@ body {
     background: aliceblue;
 }
 
-#mainEventCardPic {
-    max-width: 100%;
-    padding: 1em;
-    border-radius: 2em;
-}
-
-
-#endEventButton {
-    width: 100%;
-    background-color: #4aea12;
-    text-transform: none;
-}
-
 p {
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
 }
 
-.card {
-    margin: 20px;
-    border-radius: 20px;
+.profile {
+    padding: 0;
+    background-image: url(https://i.imgur.com/tOjR6Ui.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+.profile figure {
+    min-height: 145px;
+    position: relative;
+    margin-bottom: 65px;
+}
+.profile figure img {
+    width: 100%;
+    max-height: 250px;
+}
+.profile figure .overlay {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
 }
 
-div.org-text {
-    color: black;
+.profile figure figcaption {
+    left: 80%;
+    width: 130px;
+    height: 130px;
+    bottom: -65px;
+    overflow: hidden;
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid #777;
 }
 
-a, a:hover, a:focus {
-    color: inherit;
+.profile figure figcaption img {
+    width: 100%;
+    height: 100%;
+}
+
+.profile .caption {
+    padding: 10px 0;
+    text-align: center;
+}
+.profile .caption .name {
+    margin-top: 0;
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+a:hover {
     text-decoration: none;
-    transition: all 0.3s;
+}
+
+.steps {
+    display: block;
+}
+
+.pn {
+    padding: 1em;
+    width: 100%;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.reward-panel {
+    text-align: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url("https://i.imgur.com/Rm1OCmy.jpg");
+    margin: 20px;
+}
+.yesterday-panel {
+    text-align: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url("https://i.imgur.com/ZhEeJmr.jpg");
+    margin: 20px;
+}
+
+.reward-panel .darkblue-header, .yesterday-panel .darkblue-header {
+    background: transparent;
+    padding: 3px;
+    margin-bottom: 15px;
+}
+.reward-panel h1, .yesterday-panel h1 {
+    color: #f2f2f2;
+}
+.reward-panel h5, .yesterday-panel h5 {
+    font-weight: 200;
+    margin-top: 10px;
+    color: white;
+}
+.reward-panel footer, .yesterday-panel footer {
+    color: white;
+}
+.reward-panel footer h5, .yesterday-panel footer h5 {
+    margin-left:10px; 
+    margin-right: 10px;
+    font-weight: 700;
 }
 
 .navbar {
@@ -158,6 +227,7 @@ a.article, a.article:hover {
 ----------------------------------------------------- */
 #content {
     padding: 20px;
+    width: 100%;
     min-height: 100vh;
     transition: all 0.3s;
 }

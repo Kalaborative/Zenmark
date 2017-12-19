@@ -10,7 +10,7 @@
   <a class="navbar-brand" href="#"><img src="static/img/zenlogo_small.png"></a>
       <button type="button" id="sidebarCollapse" class="btn btn-secondary my-2 my-sm-0">
             <i class="fas fa-bars"></i>
-            <span>Menu <span class="badge badge-success">1</span></span>
+            <span>Menu <span class="badge badge-success" id="badgeNumberForm">{%if notifs | length > 1%}{{ notifs | length - 1}}{%endif%}</span></span>
       </button>
 
   <div class="collapse navbar-collapse" id="navbarColor01">
@@ -23,23 +23,27 @@
             <!-- Sidebar Holder -->
             <nav id="sidebar" class="active">
                 <div class="sidebar-header">
-                    <h3>Logged in as <strong>{{current_user.username }}</strong></h3>
+                    <h3>Logged in as <strong id="currentUsername">{{current_user.username }}</strong></h3>
                 </div>
 
                 <ul class="list-unstyled components">
                     <li class="active">
-                        <a href="#"> <i class="far fa-calendar"></i> Today</a>
+                        <a href="/welcome"> <i class="far fa-calendar"></i> Today</a>
                     </li>
                     <li>
                         <a href="#"><i class="far fa-calendar-alt"></i> Week</a>
                     </li>
+                    {% if not current_user.isGuest %}
                     <li>
                         <a href="#"><i class="fas fa-calendar-plus"></i>  Add events</a>
                     </li>
+                    {% endif %}
                 </ul>
 
                 <ul class="list-unstyled CTAs">
-                    <li><a href="#" class="download">View My Profile <span class="badge badge-success">1 NEW</span></a></li>
+                    {% if not current_user.isGuest %}
+                    <li><a href="/myprofile" class="download">View My Profile <span class="badge badge-success" id="badgeWordForm">{% if notifs | length > 1%}{{ notifs | length - 1}} NEW{%endif%}</span></a></li>
+                    {% endif %}
                     <li><a href="{{url_for('logout')}}" class="article">Log Out</a></li>
                 </ul>
             </nav>
@@ -50,6 +54,13 @@
             		<div class="row">
                     <div class="">
             			<div class="card card-inverse text-white bg-primary mb-3" id="mainEventCard" style="height: 40rem;">
+                            {% if not current_user.isGuest %}
+                            <div class="card-block" id="buttonChecker" guest="no">
+                            </div>
+                            {% else%}
+                            <div class="card-block" id="buttonChecker" guest="yes">
+                            </div>
+                            {% endif %}
 						</div>
                     </div>
                     <div class="">
@@ -77,35 +88,17 @@
 								      </select>
 								    </div>
 			                  </fieldset>
+                              {% if not current_user.isGuest %}
 			                  <button type="submit" class="btn btn-info">Add organizer</button>
 			                  <button type="submit" class="btn btn-info">Remove organizer</button>
+                              {% endif %}
 			              </form>
 						  </div>
 						</div>
                        </div>
                        <div class="">
-                            <div class="alert alert-dismissible alert-info">
-                              <button type="button" class="close" data-dismiss="alert">&times;</button>
-                              <strong>Hey!</strong> You've unlocked an achievement! 😱 <a href="{{url_for('gift')}}" class="alert-link"> Click here to see what it is!</a>
-                            </div>
                        </div>
                    </div>
-                   <div class="row">
-                        <div class="">
-                            <div class="darkblue-panel pn">
-                                <div class="darkblue-header">
-                                    <h5>SITE STATICS</h5>
-                                </div>
-                                <h1 class="mt"><i class="fa fa-trophy fa-3x"></i></h1>
-                                <p>+ 1,789 NEW VISITS</p>
-                                <footer>
-                                    <div class="centered">
-                                        <h5><i class="fa fa-trophy"></i> 17,988</h5>
-                                    </div>
-                                </footer>
-                            </div>
-                        </div>
-            		</div>
             	</div>
 			</div>
 
@@ -169,30 +162,33 @@
                             <div class="card-img-overlay text-primary text-white"> \
                                 <h2 class="card-title text-white">It\'s game night!</h2> \
                                 <p class="card-text text-white">The most frequent events on Love Shack are game nights. Make it fun!</p>\
-                            </div>\
-                            <div class="card-block">\
-                                <button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>\
                             </div>';
+                    $buttoncheck = $('#buttonChecker').attr('guest');
+                    console.log($buttoncheck);
+                    if ($buttoncheck == "no") {
+                        var gameButton = '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>';
+                    }
                  } else if (game == "Karaoke") {
                     var gameHtml =  '<img src="static/img/karaoke_night.png" class="card-img" id="mainEventCardPic"> \
                             <div class="card-img-overlay text-primary text-white"> \
                                 <h2 class="card-title text-white">It\'s karaoke night!</h2> \
                                 <p class="card-text text-white">Time to sing! Host a karaoke event and get people to sing! If you need help maintaining \
                                 the queue, try out our Stager app.</p> \
-                            </div> \
-                            <div class="card-block"> \
-                                <button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button> \
-                                <a href="https://stager-app.herokuapp.com/"><button type="button" class="btn btn-info" style="width: 100%;">Open Stager</button></a> \
                             </div>';
+                    $buttoncheck = $("#buttonChecker").attr('guest');
+                    if ($buttoncheck == "no") {
+                        var gameButton =  '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button> \
+                                <a href="https://stager-app.herokuapp.com/"><button type="button" class="btn btn-info" style="width: 100%;">Open Stager</button></a>';
+                    }
                  }
-                 $("#mainEventCard").html(gameHtml);
+                 $(gameHtml).insertBefore($("#buttonChecker"));
+                 $("#buttonChecker").html(gameButton);
 
                  setTimeout(function(){
                     let todays_date = new Date();
                     todays_date.setDate(todays_date.getDate() - 1);
                     var yesterday = formatDate(todays_date);
                     var payload = {'yesterday': yesterday};
-                    console.log(JSON.stringify(payload));
                     $.ajax({
                         url: '/checkyesterday',
                         type: 'POST',
@@ -202,6 +198,13 @@
                     }).done(function(response){
                         console.log("AJAX Request success");
                         console.log(response);
+
+                        newNumber = response['notifs'].length - 1;
+                        $('#badgeNumberForm').html(newNumber);
+                        $buttoncheck = $('#buttonChecker').attr('guest');
+                        if ($buttoncheck == "no") {
+                            $('#badgeWordForm').html(newNumber + " NEW");
+                        }
                     }).fail(function(){
                         console.log('AJAX Request failed');
                     });

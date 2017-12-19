@@ -3,14 +3,14 @@
 {% block head %}
 	{{ super() }}
 	<script defer src="https://use.fontawesome.com/releases/v5.0.1/js/all.js"></script>
-	<link rel="stylesheet" type="text/css" href="static/css/welcome.css">
+	<link rel="stylesheet" type="text/css" href="static/css/profile.css">
 {% endblock %}
 {% block content %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand" href="#"><img src="static/img/zenlogo_small.png"></a>
       <button type="button" id="sidebarCollapse" class="btn btn-secondary my-2 my-sm-0">
             <i class="fas fa-bars"></i>
-            <span>Menu <span class="badge badge-success">1</span></span>
+            <span>Menu <span class="badge badge-success">{%if notifs | length > 1%}{{ notifs | length - 1}}{%endif%}</span></span>
       </button>
 
   <div class="collapse navbar-collapse" id="navbarColor01">
@@ -27,8 +27,8 @@
                 </div>
 
                 <ul class="list-unstyled components">
-                    <li class="active">
-                        <a href="#"> <i class="far fa-calendar"></i> Today</a>
+                    <li>
+                        <a href="/welcome"> <i class="far fa-calendar"></i> Today</a>
                     </li>
                     <li>
                         <a href="#"><i class="far fa-calendar-alt"></i> Week</a>
@@ -39,7 +39,7 @@
                 </ul>
 
                 <ul class="list-unstyled CTAs">
-                    <li><a href="#" class="download">View My Profile <span class="badge badge-success">1 NEW</span></a></li>
+                    <li><a href="/myprofile" class="download">View My Profile <span class="badge badge-success">{% if notifs | length > 1%}{{ notifs | length - 1}} NEW{%endif%}</span></a></li>
                     <li><a href="{{url_for('logout')}}" class="article">Log Out</a></li>
                 </ul>
             </nav>
@@ -47,6 +47,69 @@
             <!-- Page Content Holder -->
             <div id="content">
             	<div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                    <div class="thumbnail profile">
+                        <figure>
+                            <figcaption>
+                                <img src="https://i.stack.imgur.com/XfDJy.png" alt="Profile image">
+                            </figcaption>
+                        </figure>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="row" style="text-align: right;" id="primary-row">
+                        <div class="col-lg-12">
+                        <div class="caption">
+                            <h2 class="name"><strong>{{ current_user.username}}</strong></h2>
+                        </div>
+                        </div>
+                    </div>
+                    {% if "reward" in notifs %}
+                    <div class="row">
+                            <div class="reward-panel pn">
+                                <a href="/gift">
+                                <div class="darkblue-header">
+                                    <h5>You've earned a new reward!</h5>
+                                </div>
+                                <h1 class="mt"><i class="fa fa-trophy fa-3x"></i></h1>
+                                <footer>
+                                    <div class="centered">
+                                        <h5>Click here to get it.</h5>
+                                    </div>
+                                </footer>
+                                </a>
+                            </div>
+                    </div>
+                    {% endif %}
+                    {% if "needydayevent" in notifs %}
+                    <div class="row">
+                            <div class="yesterday-panel pn">
+                                <a href="/gift">
+                                <div class="darkblue-header">
+                                    <h5>Uh oh. Looks like someone forgot to host yesterday's event.</h5>
+                                </div>
+                                <h1 class="mt"><i class="fa fa-calendar-check fa-3x"></i></h1>
+                                <footer>
+                                    <div class="centered">
+                                        <h5>Fill it in now?</h5>
+                                    </div>
+                                </footer>
+                                </a>
+                            </div>
+                    </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="card border-primary mb-3" style="max-width: 20rem; margin: 20px;">
+                            <div class="card-header">
+                                Rewards
+                            </div>
+                            <div class="card-body text-primary">
+                                <h4 class="card-title">You have no rewards.</h4>
+                                <p class="card-text">Start completing some events to earn some!</p>
+                            </div>
+                        </div>
+                    </div>
             	</div>
 			</div>
 
@@ -54,5 +117,12 @@
 {% endblock %}
 {% block foot %}
 	{{ super() }}
+    <script type="text/javascript">
+         $(document).ready(function () {
+             $('#sidebarCollapse').on('click', function () {
+                 $('#sidebar').toggleClass('active');
+             });
+         });
+    </script>
 {% endblock %}
 	
