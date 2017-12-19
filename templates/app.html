@@ -6,9 +6,6 @@
 {% block content %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <img src="static/img/zenlogo.png" alt="zenLogo" id="zenLogo">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
 
   <div class="collapse navbar-collapse" id="navbarColor01">
     <ul class="navbar-nav mr-auto">
@@ -118,6 +115,21 @@
 			  <span class="signuperrorresponse"></span>
 			</div>
 		</fieldset>
+		<fieldset>
+			<legend>Optional:</legend>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" name="guestCheck" id="guestCheck" value="false">
+          Choose this if you are signing up as a guest.
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" name="adminCheck" id="adminCheck" value="false">
+          Choose this if you are going to sign up as an admin.
+        </label>
+      </div>
+		</fieldset>
 	    </form>
 		</div>
 			  <div class="modal-footer">
@@ -179,6 +191,7 @@
 		});
 		$('#mySignupData').on('submit', function(e){
 			e.preventDefault();
+			console.log($('#mySignupData').serialize());
 			$.post('/', data=$('#mySignupData').serialize()).done(function(){
 				var newUser = $('#signupName').val().toLowerCase();
 				var newPw = $('#signupPass').val();
@@ -189,9 +202,32 @@
 				$('#signupPass').val('');
 				$('#confirmPass').val('');
 				$.get("/");
-			}).fail(function(){
+			}).fail(function(error){
 				alert('Could not insert data!');
+				console.log(error);
 			});
 		});
+		$("#guestCheck").click(function () {
+			if ($('#guestCheck').is(':checked')) {
+				$('#guestCheck').val('true');
+				$('#adminCheck').attr("disabled", "");
+				$('#adminCheck').val('false');
+			} else {
+				$('#guestCheck').val('false');
+				$("#adminCheck").removeAttr("disabled");
+			}
+		});
+
+		$("#adminCheck").click(function () {
+			if ($('#adminCheck').is(':checked')) {
+				$('#guestCheck').attr("disabled", "");
+				$("#adminCheck").val('true');
+				$('#guestCheck').val('false');
+			} else {
+				$("#adminCheck").val('false');
+				$("#guestCheck").removeAttr("disabled");
+			}
+		});
+
 	</script>
 {% endblock %}

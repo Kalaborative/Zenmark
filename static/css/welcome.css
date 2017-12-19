@@ -2,6 +2,55 @@ body {
     background: aliceblue;
 }
 
+#mainEventCardPic {
+    max-width: 100%;
+    padding: 1em;
+    border-radius: 2em;
+}
+
+.steps {
+    display: block;
+}
+
+.pn {
+    height: 250px;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.darkblue-panel {
+    text-align: center;
+    background: #444c57;
+    margin: 20px;
+}
+.darkblue-panel .darkblue-header {
+    background: transparent;
+    padding: 3px;
+    margin-bottom: 15px;
+}
+.darkblue-panel h1 {
+    color: #f2f2f2;
+}
+.darkblue-panel h5 {
+    font-weight: 200;
+    margin-top: 10px;
+    color: white;
+}
+.darkblue-panel footer {
+    color: white;
+}
+.darkblue-panel footer h5 {
+    margin-left:10px; 
+    margin-right: 10px;
+    font-weight: 700;
+}
+
+
+#endEventButton {
+    width: 100%;
+    background-color: #4aea12;
+    text-transform: none;
+}
+
 p {
     font-size: 1.1em;
     font-weight: 300;

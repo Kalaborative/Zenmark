@@ -8,21 +8,14 @@
 {% block content %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <a class="navbar-brand" href="#"><img src="static/img/zenlogo_small.png"></a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" style="">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+      <button type="button" id="sidebarCollapse" class="btn btn-secondary my-2 my-sm-0">
+            <i class="fas fa-bars"></i>
+            <span>Menu <span class="badge badge-success">1</span></span>
+      </button>
 
   <div class="collapse navbar-collapse" id="navbarColor01">
     <ul class="navbar-nav mr-auto">
-    	<div class="alert alert-dismissible alert-info">
-		  <button type="button" class="close" data-dismiss="alert">&times;</button>
-		  <strong>Hey!</strong> You've unlocked an achievement! 😱 <a href="{{url_for('gift')}}" class="alert-link"> Click here to see what it is!</a>
-		</div>
     </ul>
-      <button type="button" id="sidebarCollapse" class="btn btn-secondary my-2 my-sm-0">
-            <i class="fas fa-bars"></i>
-            <span>Menu</span>
-      </button>
   </div>
 </nav>
 
@@ -46,7 +39,7 @@
                 </ul>
 
                 <ul class="list-unstyled CTAs">
-                    <li><a href="#" class="download">View My Profile <span class="badge badge-success">1</span></a></li>
+                    <li><a href="#" class="download">View My Profile <span class="badge badge-success">1 NEW</span></a></li>
                     <li><a href="{{url_for('logout')}}" class="article">Log Out</a></li>
                 </ul>
             </nav>
@@ -55,18 +48,15 @@
             <div id="content">
             	<div class="container-fluid">
             		<div class="row">
-            			<div class="card card-inverse text-white bg-primary mb-3">
-            				<img src="static/img/gamenight.png" class="card-img">
-	  						<div class="card-header"><h1>Organizers: 1</h1></div>
-	  						<div class="card-img-overlay text-primary text-white">
-	    						<h2 class="card-title text-white">It's game night!</h2>
-	    						<p class="card-text text-white">The most frequent events on Love Shack are game nights. Make it fun!</p>
-	  						</div>
+                    <div class="">
+            			<div class="card card-inverse text-white bg-primary mb-3" id="mainEventCard" style="height: 40rem;">
 						</div>
+                    </div>
+                    <div class="">
 						<div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
 						  <div class="card-header" id="date-heading"></div>
 						  <div class="card-body">
-						    <h4 class="card-title">Organizers hosting are:</h4>
+						    <h4 class="card-title" id="checkIfAnyOrgs">Organizers hosting are:</h4>
 						    <hr>
 						    <div class="card bg-secondary mb-3 org-text">
 							  <div class="card-body">
@@ -75,7 +65,7 @@
 							</div>
 							<hr>
 							<p class="card-text">To modify this, choose an org from the list below, then choose the appropriate action.</p>
-							<form action="#">
+							<form action="#" id="mySelection">
 							  <fieldset>
 							  	    <div class="form-group">
 								      <select class="form-control" id="exampleSelect1">
@@ -92,6 +82,29 @@
 			              </form>
 						  </div>
 						</div>
+                       </div>
+                       <div class="">
+                            <div class="alert alert-dismissible alert-info">
+                              <button type="button" class="close" data-dismiss="alert">&times;</button>
+                              <strong>Hey!</strong> You've unlocked an achievement! 😱 <a href="{{url_for('gift')}}" class="alert-link"> Click here to see what it is!</a>
+                            </div>
+                       </div>
+                   </div>
+                   <div class="row">
+                        <div class="">
+                            <div class="darkblue-panel pn">
+                                <div class="darkblue-header">
+                                    <h5>SITE STATICS</h5>
+                                </div>
+                                <h1 class="mt"><i class="fa fa-trophy fa-3x"></i></h1>
+                                <p>+ 1,789 NEW VISITS</p>
+                                <footer>
+                                    <div class="centered">
+                                        <h5><i class="fa fa-trophy"></i> 17,988</h5>
+                                    </div>
+                                </footer>
+                            </div>
+                        </div>
             		</div>
             	</div>
 			</div>
@@ -132,8 +145,67 @@
                  	case 6:
                  		today = "Saturday";
                  }
-
                  $('#date-heading').html('Today is ' + today + ".");
+
+                 function formatDate (date) {
+                    var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+                    var day = date.getDate();
+                    var monthIndex = date.getMonth();
+                    var year = date.getFullYear();
+
+                    return monthNames[monthIndex] + " " + day + " " + year;
+                 }
+
+                 var current_date = formatDate(d);
+
+
+                 all_event_data = {{eventdata | safe }};
+                 var todays_event_data = all_event_data.filter(event => event[0] == today);
+                 console.log(todays_event_data);
+
+                 var [_, game, orgs] = todays_event_data[0];
+                 if (game == "Gaming") {
+                    var gameHtml =  '<img src="static/img/gamenight.png" class="card-img" id="mainEventCardPic"> \
+                            <div class="card-img-overlay text-primary text-white"> \
+                                <h2 class="card-title text-white">It\'s game night!</h2> \
+                                <p class="card-text text-white">The most frequent events on Love Shack are game nights. Make it fun!</p>\
+                            </div>\
+                            <div class="card-block">\
+                                <button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>\
+                            </div>';
+                 } else if (game == "Karaoke") {
+                    var gameHtml =  '<img src="static/img/karaoke_night.png" class="card-img" id="mainEventCardPic"> \
+                            <div class="card-img-overlay text-primary text-white"> \
+                                <h2 class="card-title text-white">It\'s karaoke night!</h2> \
+                                <p class="card-text text-white">Time to sing! Host a karaoke event and get people to sing! If you need help maintaining \
+                                the queue, try out our Stager app.</p> \
+                            </div> \
+                            <div class="card-block"> \
+                                <button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button> \
+                                <a href="https://stager-app.herokuapp.com/"><button type="button" class="btn btn-info" style="width: 100%;">Open Stager</button></a> \
+                            </div>';
+                 }
+                 $("#mainEventCard").html(gameHtml);
+
+                 setTimeout(function(){
+                    let todays_date = new Date();
+                    todays_date.setDate(todays_date.getDate() - 1);
+                    var yesterday = formatDate(todays_date);
+                    var payload = {'yesterday': yesterday};
+                    console.log(JSON.stringify(payload));
+                    $.ajax({
+                        url: '/checkyesterday',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify(payload)
+                    }).done(function(response){
+                        console.log("AJAX Request success");
+                        console.log(response);
+                    }).fail(function(){
+                        console.log('AJAX Request failed');
+                    });
+                 }, 5000);
              });
          </script>
 

@@ -17,13 +17,22 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(120), unique=True)
 	password = db.Column(db.String(120))
+	isGuest = db.Column(db.Boolean())
+	notifications = db.Column(db.String(120))
+	isAdmin = db.Column(db.Boolean())
 
-	def __init__(self, username, password):
+	def __init__(self, username, password, isGuest, isAdmin, notifications):
 		self.username = username
 		self.password = password
+		self.isGuest = isGuest
+		self.isAdmin = isAdmin
+		self.notifications = notifications
 
 	def __repr__(self):
-		return '<User {}>'.format(self.username)
+		if self.isAdmin:
+			return '<Admin {}>'.format(self.username)
+		else:
+			return '<User {}>'.format(self.username)
 
 	def is_active(self):
 		return True
@@ -34,13 +43,28 @@ class User(db.Model):
 	def is_authenticated(self):
 		return self.authenticated
 
-	def is_anonymouse(self):
+	def is_anonymous(self):
 		return False
 
+class EventSchedule(db.Model):
+	__tablename__ = "events"
+	id = db.Column(db.Integer, primary_key=True)
+	day = db.Column(db.String(120), unique=True)
+	full_date = db.Column(db.String(120), unique=True)
+	event = db.Column(db.String(120))
+	orgs = db.Column(db.String(220))
+
+	def __init__(self, day, full_date, event, orgs):
+		self.day = day
+		self.full_date = full_date
+		self.event = event
+		self.orgs = orgs
+
+	def __repr__(self):
+		return "<{} event>".format(self.day)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 
 @login_manager.user_loader
@@ -57,7 +81,21 @@ def index():
 	if request.method == 'POST':
 		new_user = request.form['signupName'].lower()
 		new_pw = request.form['signupPass']
-		registerUser = User(new_user, new_pw)
+		newGuest = False
+		newAdmin = False
+		try:
+			checkifGuest = request.form['guestCheck']
+			if checkifGuest == "true":
+				print("Guest found")
+				newGuest = True
+		except:
+			checkifAdmin = request.form['adminCheck']
+			if checkifAdmin == "true":
+				print("Admin found")
+				newAdmin = True
+		finally:
+			pass
+		registerUser = User(new_user, new_pw, newGuest, newAdmin, "blank")
 		db.session.add(registerUser)
 		db.session.commit()
 		return jsonify({'text': 'Creation success'})
@@ -84,7 +122,27 @@ def loading():
 @app.route('/welcome')
 @login_required
 def welcome():
-	return render_template('welcome.html')
+	all_events = EventSchedule.query.all()
+	all_event_data = []
+	for event in all_events:
+		all_event_data.append([event.day, event.event, event.orgs])
+	return render_template('welcome.html', eventdata= all_event_data)
+
+
+@app.route('/checkyesterday', methods=["POST"])
+def checkyesterday():
+	if request.method == "POST":
+		yday_date = request.json['yesterday']
+		yday_event = EventSchedule.query.filter(EventSchedule.full_date == yday_date).first()
+		if yday_event.orgs == "blank":
+			return jsonify({"return_msg": "Looks like someone forgot to host yesterday's event. Fill it in now?"})
+		else:
+			return jsonify({"good": "true"})
+
+@app.route('/myprofile')
+@login_required
+def profile():
+	return render_template('profile.html')
 
 @app.route('/gift')
 @login_required
