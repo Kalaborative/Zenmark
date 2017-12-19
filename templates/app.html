@@ -191,7 +191,6 @@
 		});
 		$('#mySignupData').on('submit', function(e){
 			e.preventDefault();
-			console.log($('#mySignupData').serialize());
 			$.post('/', data=$('#mySignupData').serialize()).done(function(){
 				var newUser = $('#signupName').val().toLowerCase();
 				var newPw = $('#signupPass').val();

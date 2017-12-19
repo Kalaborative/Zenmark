@@ -83,17 +83,20 @@ def index():
 		new_pw = request.form['signupPass']
 		newGuest = False
 		newAdmin = False
+		# Check if any of the boxes were ticked
 		try:
 			checkifGuest = request.form['guestCheck']
 			if checkifGuest == "true":
 				print("Guest found")
 				newGuest = True
 		except:
+			pass
+		try:
 			checkifAdmin = request.form['adminCheck']
 			if checkifAdmin == "true":
 				print("Admin found")
 				newAdmin = True
-		finally:
+		except:
 			pass
 		registerUser = User(new_user, new_pw, newGuest, newAdmin, "blank")
 		db.session.add(registerUser)
