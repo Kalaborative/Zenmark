@@ -122,6 +122,18 @@
              $('#sidebarCollapse').on('click', function () {
                  $('#sidebar').toggleClass('active');
              });
+             $('.reward-panel').click(function(){
+                $.ajax({
+                    url: '/removegift',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json'
+                }).done(function(response){
+                    console.log("AJAX Request success"); 
+                }).fail(function(){
+                    console.log('AJAX Request failed');
+                });
+             });
          });
     </script>
 {% endblock %}

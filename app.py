@@ -81,7 +81,7 @@ def send_simple_message(signupUserAdmin):
 		'https://api.mailgun.net/v3/vizionary-dev.xyz/messages',
 		auth=('api', 'key-8e60a5b2a29f6d59869db87cb87caee1'),
 		data={"from": "Zenmark Mail <postmaster@vizionary-dev.xyz>",
-			"to": "mdavis4@dtcc.com",
+			"to": "wackydawg411@gmail.com",
 			"subject": "New admin registration",
 			"text": "Hi Drew. \nThis is a notification to inform you that a new user named '{}' has signed up as an admin. If this looks right, you don't need to do anything. Otherwise you will need to log in to Zenmark and correct this. That is your action item. Verify this login. Thanks! \n\n The Zenmark Team. :-)".format(signupUserAdmin)}
 		)
@@ -154,12 +154,20 @@ def checkyesterday():
 		unique_notifs = list(set(current_user.notifications.split(",")))
 		return jsonify({"notifs": unique_notifs})
 
+@app.route('/awardgift', methods=["POST"])
+def awardgift():
+	if request.method == "POST":
+		if "reward" not in current_user.notifications:
+			current_user.notifications += ",reward"
+			db.session.commit()
+		unique_notifs = list(set(current_user.notifications.split(",")))
+		return jsonify({"notifs": unique_notifs})
+
 
 @app.route('/myprofile')
 @login_required
 def profile():
 	unique_notifs = list(set(current_user.notifications.split(',')))
-	print(unique_notifs)
 	return render_template('profile.html', notifs=unique_notifs)
 
 @app.route('/gift')
@@ -172,6 +180,16 @@ def gift():
 def logout():
 	logout_user()
 	return redirect(url_for('index'))
+
+@app.route('/removegift', methods=["POST"])
+def removegift():
+	if request.method == "POST":
+		unique_notifs = list(set(current_user.notifications.split(',')))
+		no_reward = [u for u in unique_notifs if u != "reward"]
+		current_user.notifications = ",".join(no_reward)
+		db.session.commit()
+		return jsonify({'notifs': no_reward})
+
 
 @app.route('/resetnotifs')
 def resetnotifs():

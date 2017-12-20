@@ -197,8 +197,6 @@
                         data: JSON.stringify(payload)
                     }).done(function(response){
                         console.log("AJAX Request success");
-                        console.log(response);
-
                         newNumber = response['notifs'].length - 1;
                         $('#badgeNumberForm').html(newNumber);
                         $buttoncheck = $('#buttonChecker').attr('guest');
@@ -209,6 +207,25 @@
                         console.log('AJAX Request failed');
                     });
                  }, 5000);
+
+                 $('#endEventButton').click(function(){
+                    $.ajax({
+                        url: '/awardgift',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json'
+                    }).done(function(response){
+                        console.log("AJAX Request success");
+                        newNumber = response['notifs'].length - 1;
+                        $('#badgeNumberForm').html(newNumber);
+                        $buttoncheck = $('#buttonChecker').attr('guest');
+                        if ($buttoncheck == "no") {
+                            $('#badgeWordForm').html(newNumber + " NEW");
+                        }  
+                    }).fail(function(){
+                        console.log('AJAX Request failed');
+                    });
+                 });
              });
          </script>
 
