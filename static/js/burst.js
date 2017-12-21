@@ -248,8 +248,11 @@ $(document).ready(function(){
 
 	const timeline = new mojs.Timeline();
 	const achievements = new mojs.Timeline();
-
-	achievement = choose(['plane', 'sword', 'hourglass', 'umbrella', 'dove']);
+	achievement = $('#gift').attr('rewardpick');
+	console.log(achievement);
+	if (achievement == "randomReward") {
+		achievement = choose(['plane', 'sword', 'hourglass', 'umbrella', 'dove']);
+	}
 	switch (achievement) {
 		case "plane":
 			achievements.add(plane, planetext);

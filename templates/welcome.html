@@ -67,30 +67,29 @@
 						<div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
 						  <div class="card-header" id="date-heading"></div>
 						  <div class="card-body">
-						    <h4 class="card-title" id="checkIfAnyOrgs">Organizers hosting are:</h4>
+						    <h4 class="card-title">Organizers hosting are:</h4>
 						    <hr>
-						    <div class="card bg-secondary mb-3 org-text">
-							  <div class="card-body">
-							    <p class="card-text">Diamond</p>
-							  </div>
-							</div>
+                            <div id="checkIfAnyOrgs">
+                            </div>
 							<hr>
 							<p class="card-text">To modify this, choose an org from the list below, then choose the appropriate action.</p>
 							<form action="#" id="mySelection">
 							  <fieldset>
 							  	    <div class="form-group">
-								      <select class="form-control" id="exampleSelect1">
+								      <select class="form-control" id="orgSelect" name="orgSelect">
 								        <option>Dylan Symm</option>
 								        <option>Rope Bunny</option>
 								        <option>Selene</option>
 								        <option>Noodle</option>
 								        <option>Smitten</option>
+                                        <option>Heero</option>
+                                        <option>Diamond</option>
 								      </select>
 								    </div>
 			                  </fieldset>
                               {% if not current_user.isGuest %}
-			                  <button type="submit" class="btn btn-info">Add organizer</button>
-			                  <button type="submit" class="btn btn-info">Remove organizer</button>
+			                  <button class="btn btn-info" id="addOrg">Add organizer</button>
+			                  <button type="submit" class="btn btn-info" id="removeOrg">Remove organizer</button>
                               {% endif %}
 			              </form>
 						  </div>
@@ -106,57 +105,74 @@
 {% endblock %}
 {% block foot %}
 	{{ super() }}
-	         <script type="text/javascript">
+    <script src="static/js/welcome.js"></script>
+	<script type="text/javascript">
              $(document).ready(function () {
-                 $('#sidebarCollapse').on('click', function () {
-                     $('#sidebar').toggleClass('active');
+                 $("#addOrg").click(function(event){
+                    var formdata = $('#mySelection').serialize();
+                    console.log(formdata);
+                    $.ajax({
+                        url: '/addorg',
+                        type: 'POST',
+                        data: formdata
+                    }).done(function(response){
+                        console.log('ADD ORG AJAX call success');
+                        update = response['updateOrg'];
+                        $('#checkIfAnyOrgs').append('<div class="card bg-secondary mb-3 org-text">\
+                              <div class="card-body">\
+                                <p class="card-text">' + update + '</p>\
+                              </div>\
+                            </div>');
+                    }).fail(function(event){
+                        alert("Looks like you have outdated dates. Please update them!");
+                    });
                  });
 
                  var d = new Date();
                  var n = d.getDay();
-
                  var today;
                  switch (n) {
-                 	case 0:
-                 		today = "Sunday";
-                 		break;
-                 	case 1:
-                 		today = "Monday";
-                 		break;
-                 	case 2:
-                 		today = "Tuesday";
-                 		break;
-                 	case 3:
-                 		today = "Wednesday";
-                 		break;
-                 	case 4:
-                 		today = "Thurday";
-                 		break;
-                 	case 5:
-                 		today = "Friday";
-                 		break;
-                 	case 6:
-                 		today = "Saturday";
+                    case 0:
+                        today = "Sunday";
+                        break;
+                    case 1:
+                        today = "Monday";
+                        break;
+                    case 2:
+                        today = "Tuesday";
+                        break;
+                    case 3:
+                        today = "Wednesday";
+                        break;
+                    case 4:
+                        today = "Thursday";
+                        break;
+                    case 5:
+                        today = "Friday";
+                        break;
+                    case 6:
+                        today = "Saturday";
                  }
                  $('#date-heading').html('Today is ' + today + ".");
 
-                 function formatDate (date) {
-                    var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-                    var day = date.getDate();
-                    var monthIndex = date.getMonth();
-                    var year = date.getFullYear();
 
-                    return monthNames[monthIndex] + " " + day + " " + year;
-                 }
-
-                 var current_date = formatDate(d);
-
-
-                 all_event_data = {{eventdata | safe }};
+                 var all_event_data = {{eventdata | safe }};
                  var todays_event_data = all_event_data.filter(event => event[0] == today);
-                 console.log(todays_event_data);
 
                  var [_, game, orgs] = todays_event_data[0];
+                 if (orgs) {
+                    var orgsList = orgs.split(',');
+                    console.log("ORGSLIST: ", orgsList);
+                    orgsList.forEach(function(element){
+                        if (element.length > 0) {
+                            $("#checkIfAnyOrgs").append('<div class="card bg-secondary mb-3 org-text">\
+                              <div class="card-body">\
+                                <p class="card-text">' + element + '</p>\
+                              </div>\
+                            </div>');
+                        }
+                    });
+                 }
                  if (game == "Gaming") {
                     var gameHtml =  '<img src="static/img/gamenight.png" class="card-img" id="mainEventCardPic"> \
                             <div class="card-img-overlay text-primary text-white"> \
@@ -164,7 +180,6 @@
                                 <p class="card-text text-white">The most frequent events on Love Shack are game nights. Make it fun!</p>\
                             </div>';
                     $buttoncheck = $('#buttonChecker').attr('guest');
-                    console.log($buttoncheck);
                     if ($buttoncheck == "no") {
                         var gameButton = '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>';
                     }
@@ -183,39 +198,12 @@
                  }
                  $(gameHtml).insertBefore($("#buttonChecker"));
                  $("#buttonChecker").html(gameButton);
-
-                 setTimeout(function(){
-                    let todays_date = new Date();
-                    todays_date.setDate(todays_date.getDate() - 1);
-                    var yesterday = formatDate(todays_date);
-                    var payload = {'yesterday': yesterday};
-                    $.ajax({
-                        url: '/checkyesterday',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        dataType: 'json',
-                        data: JSON.stringify(payload)
-                    }).done(function(response){
-                        console.log("AJAX Request success");
-                        newNumber = response['notifs'].length - 1;
-                        $('#badgeNumberForm').html(newNumber);
-                        $buttoncheck = $('#buttonChecker').attr('guest');
-                        if ($buttoncheck == "no") {
-                            $('#badgeWordForm').html(newNumber + " NEW");
-                        }
-                    }).fail(function(){
-                        console.log('AJAX Request failed');
-                    });
-                 }, 5000);
-
                  $('#endEventButton').click(function(){
                     $.ajax({
                         url: '/awardgift',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        dataType: 'json'
+                        type: 'POST'
                     }).done(function(response){
-                        console.log("AJAX Request success");
+                        console.log("AJAX Request success!");
                         newNumber = response['notifs'].length - 1;
                         $('#badgeNumberForm').html(newNumber);
                         $buttoncheck = $('#buttonChecker').attr('guest');
@@ -226,8 +214,8 @@
                         console.log('AJAX Request failed');
                     });
                  });
-             });
-         </script>
+            });
+    </script>
 
 {% endblock %}
 	

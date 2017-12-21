@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import requests
 from os import environ, urandom
 
@@ -11,6 +12,7 @@ db_uri = "postgres://jewobnjxfznftb:062f6ed9eecd5b54c782c9c82252d6c4790d77e9f564
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+eligible_rewards = ['plane', 'sword', 'dove', 'umbrella', 'hourglass', 'randomReward']
 
 # Create our database model
 class User(db.Model):
@@ -157,23 +159,41 @@ def checkyesterday():
 @app.route('/awardgift', methods=["POST"])
 def awardgift():
 	if request.method == "POST":
-		if "reward" not in current_user.notifications:
-			current_user.notifications += ",reward"
+		if "sword" not in current_user.notifications:
+			current_user.notifications += ",sword"
 			db.session.commit()
 		unique_notifs = list(set(current_user.notifications.split(",")))
 		return jsonify({"notifs": unique_notifs})
+
+@app.route('/addorg', methods=['POST'])
+def addorg():
+	org = request.form['orgSelect']
+	todaydate = datetime.today().strftime("%b %d %Y")
+	update_date = EventSchedule.query.filter(EventSchedule.full_date == todaydate).first()
+	update_date.orgs += ",{}".format(org)
+	db.session.commit()
+	return jsonify({'status': "OK", "updateOrg": org})
 
 
 @app.route('/myprofile')
 @login_required
 def profile():
+	myReward = None
 	unique_notifs = list(set(current_user.notifications.split(',')))
-	return render_template('profile.html', notifs=unique_notifs)
+	for notif in unique_notifs:
+		if notif in eligible_rewards:
+			myReward = notif
+	return render_template('profile.html', notifs=unique_notifs, reward=myReward)
 
 @app.route('/gift')
 @login_required
 def gift():
-	return render_template('gift.html')
+	myReward = None
+	allNotifs = list(set(current_user.notifications.split(',')))
+	for notif in allNotifs:
+		if notif in eligible_rewards:
+			myReward = notif
+	return render_template('gift.html', reward=myReward)
 
 @app.route('/logout')
 @login_required
@@ -185,10 +205,13 @@ def logout():
 def removegift():
 	if request.method == "POST":
 		unique_notifs = list(set(current_user.notifications.split(',')))
-		no_reward = [u for u in unique_notifs if u != "reward"]
-		current_user.notifications = ",".join(no_reward)
+		for notif in unique_notifs:
+			if notif in eligible_rewards:
+				myReward = notif
+		removed_reward = [u for u in unique_notifs if u != myReward]
+		current_user.notifications = ",".join(removed_reward)
 		db.session.commit()
-		return jsonify({'notifs': no_reward})
+		return jsonify({'notifs': removed_reward})
 
 
 @app.route('/resetnotifs')
