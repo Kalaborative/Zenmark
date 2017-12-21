@@ -175,6 +175,18 @@ def addorg():
 	return jsonify({'status': "OK", "updateOrg": org})
 
 
+@app.route('/removeorg', methods=["POST"])
+def removeorg():
+	org = request.form['orgSelect']
+	todaydate = datetime.today().strftime("%b %d %Y")
+	update_date = EventSchedule.query.filter(EventSchedule.full_date == todaydate).first()
+	allOrgs = update_date.orgs.split(',')
+	removed = [a for a in allOrgs if a != org]
+	update_date.orgs = ",".join(removed)
+	db.session.commit()
+	return jsonify({'status': "OK", "updateOrg": org})
+
+
 @app.route('/myprofile')
 @login_required
 def profile():

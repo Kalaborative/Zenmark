@@ -53,6 +53,11 @@ def test_user_already_exists():
 	signuperror = driver.find_element_by_class_name('signuperrorresponse').text
 	assert "already registered" in signuperror
 
+def test_cannot_tick_both_guest_and_admin():
+	driver.find_element_by_id('guestCheck').click()
+	adminCheck = driver.find_element_by_id('adminCheck')
+	assert adminCheck.get_attribute('disabled') == 'true'
+
 def test_successful_signup():
 	username = driver.find_element_by_id('signupName')
 	username.clear()
