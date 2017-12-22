@@ -82,8 +82,9 @@
 								        <option>Selene</option>
 								        <option>Noodle</option>
 								        <option>Smitten</option>
-                                        <option>Heero</option>
-                                        <option>Diamond</option>
+                        <option>Heero</option>
+                        <option>Diamond</option>
+                        <option>JoeMamaInc</option>
 								      </select>
 								    </div>
 			                  </fieldset>
@@ -138,9 +139,8 @@
 
 
                  var all_event_data = {{eventdata | safe }};
-                 var todays_event_data = all_event_data.filter(event => event[0] == today);
-
-                 var [_, game, orgs] = todays_event_data[0];
+                 var todays_event_data = all_event_data.filter(event => event[1] == today);
+                 var [isEventDone, _, game, orgs] = todays_event_data[0];
                  if (orgs) {
                     var orgsList = orgs.split(',');
                     console.log("ORGSLIST: ", orgsList);
@@ -154,11 +154,27 @@
                         }
                     });
                  }
+                 var todays_orgs = [];
+                 $('.org-text').each(function(){
+                  todays_orgs.push($.trim($(this).text()));
+                 });
+                 todays_orgs = todays_orgs.join(',');
+                 console.log(todays_orgs);
                  if (game == "Gaming") {
                     var gameHtml =  '<img src="static/img/gamenight.png" class="card-img" id="mainEventCardPic"> \
                             <div class="card-img-overlay text-primary text-white"> \
                                 <h2 class="card-title text-white">It\'s game night!</h2> \
                                 <p class="card-text text-white">The most frequent events on Love Shack are game nights. Make it fun!</p>\
+                            </div>';
+                    $buttoncheck = $('#buttonChecker').attr('guest');
+                    if ($buttoncheck == "no") {
+                        var gameButton = '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>';
+                    }
+                 } else if (game == "Movie") {
+                    var gameHtml =  '<img src="static/img/movienight.png" class="card-img" id="mainEventCardPic"> \
+                            <div class="card-img-overlay text-primary text-white"> \
+                                <h2 class="card-title text-white">It\'s movie night!</h2> \
+                                <p class="card-text text-white">Spend time with others watching some movies (or TV shows) on Rabb.it. If you can\'t think of one, let the people choose! Have a nice night!</p>\
                             </div>';
                     $buttoncheck = $('#buttonChecker').attr('guest');
                     if ($buttoncheck == "no") {
@@ -195,8 +211,29 @@
                     }).fail(function(){
                         console.log('AJAX Request failed');
                     });
-                 });
 
+                    var eventFormData = {"todaysOrgs": todays_orgs}
+                    $.ajax({
+                      url: '/endevent',
+                      type: 'POST',
+                      data: JSON.stringify(eventFormData),
+                      contentType: 'application/json',
+                      dataType: 'json'
+                    }).done(function(){
+                      console.log("Event completion success");
+                      $("#endEventButton").attr('disabled', 'true');
+                      $("#endEventButton").html('Event complete!');
+                      $('.btn-info').attr('disabled', 'true');
+                    }).fail(function(response){
+                      console.log("Event completion failure");
+                      console.log(response['responseText']);
+                    });
+
+                 });
+                 if (isEventDone == "yes") {
+                  $('#endEventButton').attr('disabled', 'true');
+                  $("#endEventButton").html('Event is already complete');
+                 }
                  $("#addOrg").click(function(event){
                     event.preventDefault();
                     var formdata = $('#mySelection').serialize();

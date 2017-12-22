@@ -28,6 +28,7 @@ $(document).ready(function(){
             data: JSON.stringify(payload)
         }).done(function(response){
             console.log("AJAX Request success");
+            console.log(response);
             newNumber = response['notifs'].length - 1;
             $('#badgeNumberForm').html(newNumber);
             $buttoncheck = $('#buttonChecker').attr('guest');

@@ -56,12 +56,14 @@ class EventSchedule(db.Model):
 	full_date = db.Column(db.String(120), unique=True)
 	event = db.Column(db.String(120))
 	orgs = db.Column(db.String(220))
+	eventcomplete = db.Column(db.String(120))
 
-	def __init__(self, day, full_date, event, orgs):
+	def __init__(self, day, full_date, event, orgs, eventcomplete):
 		self.day = day
 		self.full_date = full_date
 		self.event = event
 		self.orgs = orgs
+		self.eventcomplete = eventcomplete
 
 	def __repr__(self):
 		return "<{} event>".format(self.day)
@@ -140,17 +142,28 @@ def welcome():
 	all_events = EventSchedule.query.all()
 	all_event_data = []
 	for event in all_events:
-		all_event_data.append([event.day, event.event, event.orgs])
+		all_event_data.append([event.eventcomplete, event.day, event.event, event.orgs])
 	unique_notifs = list(set(current_user.notifications.split(',')))
 	return render_template('welcome.html', eventdata= all_event_data, notifs=unique_notifs)
 
+
+@app.route('/endevent', methods=["POST"])
+def endEvent():
+	if request.method == "POST":
+		orgToday = request.json['todaysOrgs']
+		dateToday = datetime.today().strftime("%b %d %Y")
+		update_date = EventSchedule.query.filter(EventSchedule.full_date == dateToday).first()
+		update_date.orgs = orgToday
+		update_date.eventcomplete = "yes"
+		db.session.commit()
+		return jsonify({"status": "OK"})
 
 @app.route('/checkyesterday', methods=["POST"])
 def checkyesterday():
 	if request.method == "POST":
 		yday_date = request.json['yesterday']
 		yday_event = EventSchedule.query.filter(EventSchedule.full_date == yday_date).first()
-		if yday_event.orgs == "blank":
+		if not yday_event.orgs:
 			current_user.notifications += ",needydayevent"
 			db.session.commit()
 		unique_notifs = list(set(current_user.notifications.split(",")))
