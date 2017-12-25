@@ -52,7 +52,7 @@
             <div id="content">
             	<div class="container-fluid">
             		<div class="row">
-                    <div class="">
+                    <div class="column">
             			<div class="card card-inverse text-white bg-primary mb-3" id="mainEventCard" style="height: 40rem;">
                             {% if not current_user.isGuest %}
                             <div class="card-block" id="buttonChecker" guest="no">
@@ -63,7 +63,7 @@
                             {% endif %}
 						</div>
                     </div>
-                    <div class="">
+                    <div class="column">
 						<div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
 						  <div class="card-header" id="date-heading"></div>
 						  <div class="card-body">
@@ -95,12 +95,41 @@
 			              </form>
 						  </div>
 						</div>
+            <div class="card border-dark mb-3" style="max-width: 20rem;">
+              <div class="card-header">Event Description</div>
+              <div class="card-body text-dark">
+                <p id="eventDescText">{%if desc%}{{desc}}{% else %}Description Text{% endif %}</p>
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modifyDesc">Click to Modify</button>
+              </div>
+            </div>
                        </div>
-                       <div class="">
+                       <div class="column">
                        </div>
                    </div>
             	</div>
 			</div>
+      <div class="modal fade" id="modifyDesc" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <textarea placeholder="Enter your new description" id="descriptionText" style="width: 100%;"></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" id="updateBtn">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
 {% endblock %}
@@ -108,181 +137,213 @@
 	{{ super() }}
     <script src="static/js/welcome.js"></script>
 	<script type="text/javascript">
-             $(document).ready(function () {
+   $(document).ready(function () {
 
-                 var d = new Date();
-                 var n = d.getDay();
-                 var today;
-                 switch (n) {
-                    case 0:
-                        today = "Sunday";
-                        break;
-                    case 1:
-                        today = "Monday";
-                        break;
-                    case 2:
-                        today = "Tuesday";
-                        break;
-                    case 3:
-                        today = "Wednesday";
-                        break;
-                    case 4:
-                        today = "Thursday";
-                        break;
-                    case 5:
-                        today = "Friday";
-                        break;
-                    case 6:
-                        today = "Saturday";
-                 }
-                 $('#date-heading').html('Today is ' + today + ".");
+       var d = new Date();
+       var n = d.getDay();
+       var today;
+       switch (n) {
+          case 0:
+              today = "Sunday";
+              break;
+          case 1:
+              today = "Monday";
+              break;
+          case 2:
+              today = "Tuesday";
+              break;
+          case 3:
+              today = "Wednesday";
+              break;
+          case 4:
+              today = "Thursday";
+              break;
+          case 5:
+              today = "Friday";
+              break;
+          case 6:
+              today = "Saturday";
+       }
+       $('#date-heading').html('Today is ' + today + ".");
 
+        function formatAsDate (date) {
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
 
-                 var all_event_data = {{eventdata | safe }};
-                 var todays_event_data = all_event_data.filter(event => event[1] == today);
-                 var [isEventDone, _, game, orgs] = todays_event_data[0];
-                 if (orgs) {
-                    var orgsList = orgs.split(',');
-                    console.log("ORGSLIST: ", orgsList);
-                    orgsList.forEach(function(element){
-                        if (element.length > 0) {
-                            $("#checkIfAnyOrgs").append('<div class="card bg-secondary mb-3 org-text">\
-                              <div class="card-body">\
-                                <p class="card-text">' + element + '</p>\
-                              </div>\
-                            </div>');
-                        }
-                    });
-                 }
-                 var todays_orgs = [];
-                 $('.org-text').each(function(){
-                  todays_orgs.push($.trim($(this).text()));
-                 });
-                 todays_orgs = todays_orgs.join(',');
-                 console.log(todays_orgs);
-                 if (game == "Gaming") {
-                    var gameHtml =  '<img src="static/img/gamenight.png" class="card-img" id="mainEventCardPic"> \
-                            <div class="card-img-overlay text-primary text-white"> \
-                                <h2 class="card-title text-white">It\'s game night!</h2> \
-                                <p class="card-text text-white">The most frequent events on Love Shack are game nights. Make it fun!</p>\
-                            </div>';
-                    $buttoncheck = $('#buttonChecker').attr('guest');
-                    if ($buttoncheck == "no") {
-                        var gameButton = '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>';
-                    }
-                 } else if (game == "Movie") {
-                    var gameHtml =  '<img src="static/img/movienight.png" class="card-img" id="mainEventCardPic"> \
-                            <div class="card-img-overlay text-primary text-white"> \
-                                <h2 class="card-title text-white">It\'s movie night!</h2> \
-                                <p class="card-text text-white">Spend time with others watching some movies (or TV shows) on Rabb.it. If you can\'t think of one, let the people choose! Have a nice night!</p>\
-                            </div>';
-                    $buttoncheck = $('#buttonChecker').attr('guest');
-                    if ($buttoncheck == "no") {
-                        var gameButton = '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>';
-                    }
-                 } else if (game == "Karaoke") {
-                    var gameHtml =  '<img src="static/img/karaoke_night.png" class="card-img" id="mainEventCardPic"> \
-                            <div class="card-img-overlay text-primary text-white"> \
-                                <h2 class="card-title text-white">It\'s karaoke night!</h2> \
-                                <p class="card-text text-white">Time to sing! Host a karaoke event and get people to sing! If you need help maintaining \
-                                the queue, try out our Stager app.</p> \
-                            </div>';
-                    $buttoncheck = $("#buttonChecker").attr('guest');
-                    if ($buttoncheck == "no") {
-                        var gameButton =  '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button> \
-                                <a href="https://stager-app.herokuapp.com/"><button type="button" class="btn btn-info" style="width: 100%;">Open Stager</button></a>';
-                    }
-                 }
+            return monthNames[monthIndex] + " " + day + " " + year;
+        }
 
-                 $(gameHtml).insertBefore($("#buttonChecker"));
-                 $("#buttonChecker").html(gameButton);
-                 $('#endEventButton').click(function(){
-                    $.ajax({
-                        url: '/awardgift',
-                        type: 'POST'
-                    }).done(function(response){
-                        console.log("AJAX Request success!");
-                        newNumber = response['notifs'].length - 1;
-                        $('#badgeNumberForm').html(newNumber);
-                        $buttoncheck = $('#buttonChecker').attr('guest');
-                        if ($buttoncheck == "no") {
-                            $('#badgeWordForm').html(newNumber + " NEW");
-                        }  
-                    }).fail(function(){
-                        console.log('AJAX Request failed');
-                    });
+        todayDate = formatAsDate(d);
 
-                    var eventFormData = {"todaysOrgs": todays_orgs}
-                    $.ajax({
-                      url: '/endevent',
-                      type: 'POST',
-                      data: JSON.stringify(eventFormData),
-                      contentType: 'application/json',
-                      dataType: 'json'
-                    }).done(function(){
-                      console.log("Event completion success");
-                      $("#endEventButton").attr('disabled', 'true');
-                      $("#endEventButton").html('Event complete!');
-                      $('.btn-info').attr('disabled', 'true');
-                    }).fail(function(response){
-                      console.log("Event completion failure");
-                      console.log(response['responseText']);
-                    });
+       var all_event_data = {{eventdata | safe }};
+       var todays_event_data = all_event_data.filter(event => event[1] == todayDate);
+       var [isEventDone, _, game, orgs] = todays_event_data[0];
+       if (orgs) {
+          var orgsList = orgs.split(',');
+          console.log("ORGSLIST: ", orgsList);
+          orgsList.forEach(function(element){
+              if (element.length > 0) {
+                  $("#checkIfAnyOrgs").append('<div class="card bg-secondary mb-3 org-text">\
+                    <div class="card-body">\
+                      <p class="card-text">' + element + '</p>\
+                    </div>\
+                  </div>');
+              }
+          });
+       }
+       var todays_orgs = [];
+       $('.org-text').each(function(){
+        todays_orgs.push($.trim($(this).text()));
+       });
+       todays_orgs = todays_orgs.join(',');
+       if (game == "Gaming") {
+          var gameHtml =  '<img src="static/img/gamenight.png" class="card-img" id="mainEventCardPic"> \
+                  <div class="card-img-overlay text-primary text-white"> \
+                      <h2 class="card-title text-white">It\'s game night!</h2> \
+                      <p class="card-text text-white">The most frequent events on Love Shack are game nights. Make it fun!</p>\
+                  </div>';
+          $buttoncheck = $('#buttonChecker').attr('guest');
+          if ($buttoncheck == "no") {
+              var gameButton = '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>';
+          }
+       } else if (game == "Movie") {
+          var gameHtml =  '<img src="static/img/movienight.png" class="card-img" id="mainEventCardPic"> \
+                  <div class="card-img-overlay text-primary text-white"> \
+                      <h2 class="card-title text-white">It\'s movie night!</h2> \
+                      <p class="card-text text-white">Spend time with others watching some movies (or TV shows) on Rabb.it. If you can\'t think of one, let the people choose! Have a nice night!</p>\
+                  </div>';
+          $buttoncheck = $('#buttonChecker').attr('guest');
+          if ($buttoncheck == "no") {
+              var gameButton = '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button>';
+          }
+       } else if (game == "Karaoke") {
+          var gameHtml =  '<img src="static/img/karaoke_night.png" class="card-img" id="mainEventCardPic"> \
+                  <div class="card-img-overlay text-primary text-white"> \
+                      <h2 class="card-title text-white">It\'s karaoke night!</h2> \
+                      <p class="card-text text-white">Time to sing! Host a karaoke event and get people to sing! If you need help maintaining \
+                      the queue, try out our Stager app.</p> \
+                  </div>';
+          $buttoncheck = $("#buttonChecker").attr('guest');
+          if ($buttoncheck == "no") {
+              var gameButton =  '<button type="button" class="btn btn-success" id="endEventButton">Click here to end your event!</button> \
+                      <a href="https://stager-app.herokuapp.com/"><button type="button" class="btn btn-info" style="width: 100%;">Open Stager</button></a>';
+          }
+       }
 
-                 });
-                 if (isEventDone == "yes") {
-                  $('#endEventButton').attr('disabled', 'true');
-                  $("#endEventButton").html('Event is already complete');
-                 }
-                 $("#addOrg").click(function(event){
-                    event.preventDefault();
-                    var formdata = $('#mySelection').serialize();
-                    var allOrgs = $('.org-text');
-                    var selectedOrg = $('#orgSelect').val();
-                    var matchedOrg = false;
-                    allOrgs.each(function() {
-                      if( $(this).text().indexOf(selectedOrg) !== -1 ) {
-                        matchedOrg = true;
-                      } 
-                    });
-                    if (matchedOrg) {
-                      alert("Organizer is already chosen!");
-                    } else {
-                      $.ajax({
-                          url: '/addorg',
-                          type: 'POST',
-                          data: formdata
-                      }).done(function(response){
-                          console.log('ADD ORG AJAX call success');
-                          update = response['updateOrg'];
-                          $('#checkIfAnyOrgs').append('<div class="card bg-secondary mb-3 org-text">\
-                                <div class="card-body">\
-                                  <p class="card-text">' + update + '</p>\
-                                </div>\
-                              </div>');
-                      }).fail(function(event){
-                          console.log(event);
-                      });
-                    }
-                 });
-                 $('#removeOrg').click(function(event){
-                    event.preventDefault();
-                    var formdata = $('#mySelection').serialize();
-                    console.log(formdata);
-                    $.ajax({
-                        url: '/removeorg',
-                        type: 'POST',
-                        data: formdata
-                    }).done(function(response){
-                        console.log('ADD ORG AJAX call success');
-                        update = response['updateOrg'];
-                        $('.org-text').filter(":contains('" + update + "')").remove();
-                    }).fail(function(event){
-                        console.log(event);
-                    });
-                 });
+       $(gameHtml).insertBefore($("#buttonChecker"));
+       $("#buttonChecker").html(gameButton);
+
+      $('#updateBtn').click(function(){
+        var $newText = $('#descriptionText').val();
+        var payload = {'update': $newText};
+        $.ajax({
+          url: '/updatedesc',
+          type: 'POST',
+          data: JSON.stringify(payload),
+          contentType: 'application/json',
+          dataType: 'json' 
+        }).done(function() {
+          $('#eventDescText').html($newText);
+          $('#descriptionText').val('');
+        }).fail(function() {
+          console.log('AJAX Update fail');
+        });
+      });
+
+       $('#endEventButton').click(function(){
+          var $descText = $('#eventDescText').html();
+          var payload = {'desc': $descText};
+          $.ajax({
+              url: '/awardgift',
+              type: 'POST',
+              data: JSON.stringify(payload),
+              contentType: 'application/json',
+              dataType: 'json'
+          }).done(function(response){
+              console.log("AJAX Request success!");
+              newNumber = response['notifs'].length - 1;
+              $('#badgeNumberForm').html(newNumber);
+              $buttoncheck = $('#buttonChecker').attr('guest');
+              if ($buttoncheck == "no") {
+                  $('#badgeWordForm').html(newNumber + " NEW");
+              }  
+          }).fail(function(){
+              console.log('AJAX Request failed');
+          });
+
+          var eventFormData = {"todaysOrgs": todays_orgs}
+          $.ajax({
+            url: '/endevent',
+            type: 'POST',
+            data: JSON.stringify(eventFormData),
+            contentType: 'application/json',
+            dataType: 'json'
+          }).done(function(){
+            console.log("Event completion success");
+            $("#endEventButton").attr('disabled', 'true');
+            $("#endEventButton").html('Event complete!');
+            $('.btn-info').attr('disabled', 'true');
+          }).fail(function(response){
+            console.log("Event completion failure");
+            console.log(response['responseText']);
+          });
+
+       });
+       if (isEventDone == "yes") {
+        $('#endEventButton').attr('disabled', 'true');
+        $("#endEventButton").html('Event is already complete');
+       }
+       $("#addOrg").click(function(event){
+          event.preventDefault();
+          var formdata = $('#mySelection').serialize();
+          var allOrgs = $('.org-text');
+          var selectedOrg = $('#orgSelect').val();
+          var matchedOrg = false;
+          allOrgs.each(function() {
+            if( $(this).text().indexOf(selectedOrg) !== -1 ) {
+              matchedOrg = true;
+            } 
+          });
+          if (matchedOrg) {
+            alert("Organizer is already chosen!");
+          } else {
+            $.ajax({
+                url: '/addorg',
+                type: 'POST',
+                data: formdata
+            }).done(function(response){
+                console.log('ADD ORG AJAX call success');
+                update = response['updateOrg'];
+                $('#checkIfAnyOrgs').append('<div class="card bg-secondary mb-3 org-text">\
+                      <div class="card-body">\
+                        <p class="card-text">' + update + '</p>\
+                      </div>\
+                    </div>');
+            }).fail(function(event){
+                console.log(event);
             });
-    </script>
+          }
+       });
+       $('#removeOrg').click(function(event){
+          event.preventDefault();
+          var formdata = $('#mySelection').serialize();
+          console.log(formdata);
+          $.ajax({
+              url: '/removeorg',
+              type: 'POST',
+              data: formdata
+          }).done(function(response){
+              console.log('ADD ORG AJAX call success');
+              update = response['updateOrg'];
+              $('.org-text').filter(":contains('" + update + "')").remove();
+          }).fail(function(event){
+              console.log(event);
+          });
+       });
+  });
+  </script>
 
 {% endblock %}
 	

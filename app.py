@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
+from awardengine import award_engine
 import requests
 from os import environ, urandom
 
@@ -52,18 +53,20 @@ class User(db.Model):
 class EventSchedule(db.Model):
 	__tablename__ = "events"
 	id = db.Column(db.Integer, primary_key=True)
-	day = db.Column(db.String(120), unique=True)
+	day = db.Column(db.String(120), unique=False)
 	full_date = db.Column(db.String(120), unique=True)
 	event = db.Column(db.String(120))
+	description = db.Column(db.String(120))
 	orgs = db.Column(db.String(220))
 	eventcomplete = db.Column(db.String(120))
 
-	def __init__(self, day, full_date, event, orgs, eventcomplete):
+	def __init__(self, day, full_date, event, orgs, eventcomplete, description):
 		self.day = day
 		self.full_date = full_date
 		self.event = event
 		self.orgs = orgs
 		self.eventcomplete = eventcomplete
+		self.description = description
 
 	def __repr__(self):
 		return "<{} event>".format(self.day)
@@ -108,7 +111,7 @@ def index():
 		try:
 			checkifAdmin = request.form['adminCheck']
 			if checkifAdmin == "true":
-				print(send_simple_message(request.form['signupName']))
+				send_simple_message(request.form['signupName'])
 				newAdmin = True
 		except:
 			pass
@@ -142,9 +145,11 @@ def welcome():
 	all_events = EventSchedule.query.all()
 	all_event_data = []
 	for event in all_events:
-		all_event_data.append([event.eventcomplete, event.day, event.event, event.orgs])
+		all_event_data.append([event.eventcomplete, event.full_date, event.event, event.orgs])
 	unique_notifs = list(set(current_user.notifications.split(',')))
-	return render_template('welcome.html', eventdata= all_event_data, notifs=unique_notifs)
+	todaydate = datetime.today().strftime("%b %d %Y")
+	today_event = EventSchedule.query.filter(EventSchedule.full_date == todaydate).first()
+	return render_template('welcome.html', eventdata= all_event_data, notifs=unique_notifs, desc=today_event.description)
 
 
 @app.route('/endevent', methods=["POST"])
@@ -169,11 +174,46 @@ def checkyesterday():
 		unique_notifs = list(set(current_user.notifications.split(",")))
 		return jsonify({"notifs": unique_notifs})
 
+@app.route('/updatedesc', methods=["POST"])
+def updatedesc():
+	if request.method == "POST":
+		new_description = request.json['update']
+		todaydate = datetime.today().strftime("%b %d %Y")
+		update_date = EventSchedule.query.filter(EventSchedule.full_date == todaydate).first()
+		update_date.description = new_description
+		db.session.commit()
+		return jsonify({"status": "OK"})
+
+@app.route('/fillyesterday', methods=["POST"])
+def fillyesterday():
+	if request.method == "POST":
+		eventName = request.form["eventName"]
+		orgInput = request.form["orgInput"]
+		eventDesc = request.form["eventDesc"]
+		d = timedelta(days=1)
+		yesterday = (datetime.today() - d).strftime("%b %d %Y")
+
+		yday_event = EventSchedule.query.filter(EventSchedule.full_date == yesterday).first()
+		yday_event.event = eventName
+		yday_event.orgs = orgInput
+		yday_event.description = eventDesc
+		yday_event.eventcomplete = "yes"
+		db.session.commit()
+
+		removeNotif = current_user.notifications.replace(",needydayevent", "")
+		current_user.notifications = removeNotif
+		db.session.commit()
+		return jsonify({"status": "OK"})
+
+
 @app.route('/awardgift', methods=["POST"])
 def awardgift():
 	if request.method == "POST":
-		if "sword" not in current_user.notifications:
-			current_user.notifications += ",sword"
+		submitDescription = request.json['desc']
+		reward = award_engine(submitDescription)
+		if reward:
+			reward_str = ",".join(reward)
+			current_user.notifications += "," + reward_str
 			db.session.commit()
 		unique_notifs = list(set(current_user.notifications.split(",")))
 		return jsonify({"notifs": unique_notifs})

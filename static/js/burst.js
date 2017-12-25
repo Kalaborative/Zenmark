@@ -280,7 +280,17 @@ $(document).ready(function(){
 	});
 
 	document.getElementById('clickMe').addEventListener('click', function(){
-		window.location.href = "/welcome";
+        $.ajax({
+            url: '/removegift',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json'
+        }).done(function(response){
+            console.log("AJAX Request success");
+            window.location.href = "/welcome";
+        }).fail(function(){
+            console.log('AJAX Request failed');
+        });
 	});
 });
 
