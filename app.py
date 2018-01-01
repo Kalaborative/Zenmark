@@ -117,7 +117,7 @@ def index():
 				newAdmin = True
 		except:
 			pass
-		registerUser = User(new_user, new_pw, newGuest, newAdmin, "blank")
+		registerUser = User(new_user, new_pw, newGuest, newAdmin, "blank", "")
 		db.session.add(registerUser)
 		db.session.commit()
 		return jsonify({'text': 'Creation success'})
