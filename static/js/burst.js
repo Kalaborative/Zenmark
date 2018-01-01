@@ -285,9 +285,19 @@ $(document).ready(function(){
             type: 'POST',
             contentType: 'application/json',
             dataType: 'json'
-        }).done(function(response){
-            console.log("AJAX Request success");
-            window.location.href = "/welcome";
+        }).done(function(){
+        	var gift = $("#gift").attr('rewardpick');
+        	var payload = {"reward": gift};
+        	$.ajax({
+        		type: 'POST',
+        		url: '/rewardprofile',
+        		data: JSON.stringify(payload),
+        		dataType: 'json',
+        		contentType: 'application/json'
+        	}).done(function(){
+        		console.log("AJAX Request success");
+            	window.location.href = "/welcome";
+        	});
         }).fail(function(){
             console.log('AJAX Request failed');
         });

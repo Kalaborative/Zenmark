@@ -24,13 +24,15 @@ class User(db.Model):
 	isGuest = db.Column(db.Boolean())
 	notifications = db.Column(db.String(120))
 	isAdmin = db.Column(db.Boolean())
+	rewards = db.Column(db.String(120))
 
-	def __init__(self, username, password, isGuest, isAdmin, notifications):
+	def __init__(self, username, password, isGuest, isAdmin, notifications, rewards):
 		self.username = username
 		self.password = password
 		self.isGuest = isGuest
 		self.isAdmin = isAdmin
 		self.notifications = notifications
+		self.rewards = rewards
 
 	def __repr__(self):
 		if self.isAdmin:
@@ -217,6 +219,13 @@ def awardgift():
 			db.session.commit()
 		unique_notifs = list(set(current_user.notifications.split(",")))
 		return jsonify({"notifs": unique_notifs})
+
+@app.route('/rewardprofile', methods=["POST"])
+def rewardprofile():
+	giftToAdd = request.json["reward"]
+	current_user.rewards += "," + giftToAdd
+	db.session.commit()
+	return jsonify({"status": "OK"})
 
 @app.route('/addorg', methods=['POST'])
 def addorg():

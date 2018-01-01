@@ -166,11 +166,17 @@
        }
        $('#date-heading').html('Today is ' + today + ".");
 
+        function zero_pad(n) {
+            return ("0" + n).slice(-2);
+        }
+
         function formatAsDate (date) {
             var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            var day = date.getDate();
+            var day = zero_pad(date.getDate());
             var monthIndex = date.getMonth();
             var year = date.getFullYear();
+
+
 
             return monthNames[monthIndex] + " " + day + " " + year;
         }
